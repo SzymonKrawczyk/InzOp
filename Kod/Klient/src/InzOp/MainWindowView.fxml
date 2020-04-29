@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Ekran główny -->
+
+<!--        Kontroler dla ekranu logowania-->
+<!---->
+<!--        Data        | Autor zmian           | Zmiany-->
+<!---->
+<!--        26.04.2020  | Szymon Krawczyk       |   Stworzenie (bez funkcjonalności)-->
+<!--                    |                       |-->
+<!---->
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="InzOp.MainWindowViewController">
+   <children>
+      <Label layoutX="286.0" layoutY="192.0" text="Hello" />
+   </children>
+</AnchorPane>

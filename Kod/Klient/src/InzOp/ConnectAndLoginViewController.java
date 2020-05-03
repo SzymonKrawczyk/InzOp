@@ -16,7 +16,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.paint.Color;
+
+import java.io.*;
 
 import static InzOp.Main.serwerConnector;
 
@@ -35,36 +36,57 @@ public class ConnectAndLoginViewController {
 
     public void initialize () {
 
+
+
         myErrorLabel.setText("");
         ErrorLoginLabel.setText("");
         ErrorLabelLoginStatic = ErrorLoginLabel;
         LoginButtonStatic = LoginButton;
         LoginFieldStatic = LoginField;
         //ładowanie adresu serwera z pliku
+        try (BufferedReader reader = new BufferedReader(new FileReader(new File("serwerAddress.txt")))) {
+            String adres_serwera;
+            if ((  adres_serwera = reader.readLine()) != null) {
+                //System.out.println(adres_serwera);
+                SerwerAddressField.setText(adres_serwera);
+                ConnectToSerwerButton.fire();
+            } else {
+                throw new IOException();
+            }
+        } catch (IOException e) {
+            System.err.println("Nie ma pliku inicjalizacyjnego serwerAddress.txt");;
+        }
 
     }
 
     public void onConnectToSerwerButtonClick(ActionEvent event) {
         try {
+            if (!ConnectToSerwerButton.isDisabled()) {
+                if (SerwerAddressField.getText().trim().equals("")) {
+                    throw new Exception();
+                }
 
-            if (SerwerAddressField.getText().trim().equals("")) {
-                throw new Exception();
-            }
+                try (FileWriter writer = new FileWriter("serwerAddress.txt");
+                     BufferedWriter bw = new BufferedWriter(writer)) {
+
+                    bw.write(SerwerAddressField.getText());
+                } catch (IOException e1) { }
 
                 //Próba łączenia
-            System.out.println(SerwerAddressField.getText().trim());
-            serwerConnector.connect(SerwerAddressField.getText().trim());
-            //serwerConnector.connect("localhost");
+                //System.out.println(SerwerAddressField.getText().trim());
+                serwerConnector.connect(SerwerAddressField.getText().trim());
+                //serwerConnector.connect("localhost");
 
-            myErrorLabel.setTextFill(Main.PassFillColor);
-            myErrorLabel.setText("Połączono");
-            ConnectToSerwerButton.setDisable(true);
-            SerwerAddressField.setEditable(false);
-            LoginButton.setDisable(false);
-            LoginField.setDisable(false);
-            LoginField.setEditable(true);
-            PasswordField.setDisable(false);
-            PasswordField.setEditable(true);
+                myErrorLabel.setTextFill(Main.PassFillColor);
+                myErrorLabel.setText("Połączono");
+                ConnectToSerwerButton.setDisable(true);
+                SerwerAddressField.setEditable(false);
+                LoginButton.setDisable(false);
+                LoginField.setDisable(false);
+                LoginField.setEditable(true);
+                PasswordField.setDisable(false);
+                PasswordField.setEditable(true);
+            }
         }
         catch (Exception err) {
             myErrorLabel.setTextFill(Main.ErrorFillColor);
@@ -75,14 +97,16 @@ public class ConnectAndLoginViewController {
     }
 
     public void onLoginButtonClick(ActionEvent event) {
-        if (LoginField.getText().trim().equals("") || PasswordField.getText().trim().equals("")) {
-            ErrorLabelLoginStatic.setText("Podaj dane logowania!");
-            ErrorLabelLoginStatic.setTextFill(Main.ErrorFillColor);
-            LoginButtonStatic.setDisable(false);
-        } else {
+        if (!LoginButton.isDisabled()) {
+            if (LoginField.getText().trim().equals("") || PasswordField.getText().trim().equals("")) {
+                ErrorLoginLabel.setText("Podaj dane logowania!");
+                ErrorLoginLabel.setTextFill(Main.ErrorFillColor);
+                LoginButton.setDisable(false);
+            } else {
 
-            serwerConnector.write("loginļ" + LoginField.getText().trim() + 'ļ' + PasswordField.getText().trim());
-            LoginButton.setDisable(true);
+                serwerConnector.write("loginļ" + LoginField.getText().trim() + 'ļ' + PasswordField.getText().trim());
+                LoginButton.setDisable(true);
+            }
         }
     }
 }

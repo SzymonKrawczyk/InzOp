@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!-- Ekran logowania -->
-
 <!--        Kontroler dla ekranu logowania-->
 <!---->
 <!--        Data        | Autor zmian           | Zmiany-->
@@ -29,10 +28,10 @@
       <Label text="Adres serwera:" />
       <Label text="Login:" GridPane.rowIndex="2" />
       <Label text="Hasło:" GridPane.rowIndex="3" />
-      <PasswordField fx:id="PasswordField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-      <TextField fx:id="LoginField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-      <TextField fx:id="SerwerAddressField" GridPane.columnIndex="1" />
+      <TextField fx:id="SerwerAddressField" onAction="#onConnectToSerwerButtonClick" GridPane.columnIndex="1" />
       <Button fx:id="ConnectToSerwerButton" mnemonicParsing="false" onAction="#onConnectToSerwerButtonClick" text="Połącz" GridPane.columnIndex="2" />
+      <TextField fx:id="LoginField" disable="true" editable="false" onAction="#onLoginButtonClick" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <PasswordField fx:id="PasswordField" disable="true" editable="false" onAction="#onLoginButtonClick" GridPane.columnIndex="1" GridPane.rowIndex="3" />
       <Button fx:id="LoginButton" disable="true" mnemonicParsing="false" onAction="#onLoginButtonClick" text="Zaloguj" GridPane.columnIndex="2" GridPane.rowIndex="2" />
       <Label fx:id="myErrorLabel" text="ErrorLabel" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
       <Label fx:id="ErrorLoginLabel" text="ErrorLoginLabel" GridPane.columnIndex="2" GridPane.rowIndex="3" GridPane.valignment="TOP" />

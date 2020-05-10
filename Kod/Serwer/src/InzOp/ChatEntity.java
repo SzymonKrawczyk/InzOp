@@ -5,6 +5,8 @@
         ------------|-----------------------|---------------------------------------------------
         01.05.2020  | Szymon Krawczyk       |   Stworzenie
                     |                       |
+        08.05.2020  | Szymon Krawczyk       |   Dodanie listy członków grupy, jeżeli obiekt jest grupy
+                    |                       |
 
 */
 
@@ -13,6 +15,8 @@ package InzOp;
 
 import javafx.scene.image.Image;
 
+import java.util.ArrayList;
+
 public class ChatEntity {
 
     private String name;
@@ -20,6 +24,7 @@ public class ChatEntity {
     private String status;
     private boolean active;
     private ClientConnector clientConnector;
+    private ArrayList<ChatEntity> groupMembers;
 
     public static Image imageOnline;
     public static Image imageBusy;
@@ -31,12 +36,24 @@ public class ChatEntity {
         this.status = status;
         this.active = active;
         this.clientConnector = clientConneector;
+        if (this.group) groupMembers = new ArrayList<>();
     }
 
     public void reset() {
 
         this.status = "Offline";
         this.clientConnector = null;
+    }
+
+    public ArrayList<ChatEntity> getGroupMembers() {
+        return groupMembers;
+    }
+
+    public boolean isGroupMember(String user) {
+        for (ChatEntity groupMember : groupMembers) {
+            if (groupMember.getName().equals(user)) return true;
+        }
+        return false;
     }
 
     public String getName() {

@@ -22,6 +22,13 @@
                 |                       |   System do wysyłania wiadomości wybiórczego - rozwinięcie
                 |                       |   Debugowanie
                 |                       |
+    08.05.2020  | Szymon Krawczyk       |   Debugowanie
+                |                       |   Dużo bardziej efektywne zarządzanie listą członków grupy
+                |                       |   Klient dostaje tylko grupy do których należy
+                |                       |
+    10.05.2020  | Szymon Krawczyk       |   Debugowanie
+                |                       |
+
 
  */
 
@@ -49,15 +56,6 @@ public class MainSerwer {
         try {
             ClientConnectorWrap clientConnectorWrap = new ClientConnectorWrap();
             clientConnectorWrap.start();
-            //System.out.println("Po start");
-
-
-
-            //Class.forName("com.mysql.jdbc.Driver");
-            //Class.forName("com.mysql.cj.jdbc.Driver");
-
-
-
 
             connect = DriverManager.getConnection(url, user, pswd);
             statement = connect.createStatement();
@@ -66,32 +64,10 @@ public class MainSerwer {
             ClientList = new ArrayList<ChatEntity>();
             getAllEntitiesFromDB();
 
-            //showAllEntites();
+            for (ChatEntity temp : ClientList) {
+                if (temp.isGroup()) loadGroupMembers(temp);
+            }
 
-            //System.out.println(hashPassword("Sekretariat1", "Qwerty123"));
-            //System.out.println(hashPassword("user1", "user1!"));
-           // System.out.println(hashPassword("user2", "user2!"));
-
-
-
-            //statement.executeUpdate("INSERT INTO chat.`users` (`username`, `password`, `privilege`, `active`) VALUES ('user2', 'user2!', '0', '1')");
-
-            //statement.executeUpdate("INSERT INTO chat.`groups` (`groupname`) VALUES ('HentaiAddicts')");
-
-            //statement.executeUpdate("INSERT INTO chat.`membership` (`id_user`, `id_group`) VALUES ('user1', 'HentaiAddicts')");
-            //.executeUpdate("INSERT INTO chat.`membership` (`id_user`, `id_group`) VALUES ('user2', 'HentaiAddicts')");
-
-            //statement.executeUpdate("DELETE FROM chat.`messagesuu`");
-
-            //statement.executeUpdate("INSERT INTO chat.`messagesuu` (`fromUser`, `toUser`,`messageText`) VALUES ('user1', 'user2', 'Odpisz jak będziesz, onii-chan~<3')");
-
-            //statement.executeUpdate("DELETE FROM chat.`messagesug`");
-
-            //statement.executeUpdate("INSERT INTO chat.`messagesug` (`fromUser`, `toGroup`, `messageText`) VALUES ('user1', 'HentaiAddicts', \"Witam na grupce! :3\")");
-            //statement.executeUpdate("INSERT INTO chat.`messagesug` (`fromUser`, `toGroup`, `messageText`) VALUES ('user2', 'HentaiAddicts', \"O! No cześć :D\nCo tam??\")");
-            //statement.executeUpdate("INSERT INTO chat.`messagesug` (`fromUser`, `toGroup`, `messageText`) VALUES ('user1', 'HentaiAddicts', 'Wszystko spoczko. Oglądamy razem jakieś hentai po pracy?')");
-            //statement.executeUpdate("INSERT INTO chat.`messagesug` (`fromUser`, `toGroup`, `messageText`) VALUES ('user1', 'HentaiAddicts', 'Jak nie, jak tak :D')");
-            //statement.executeUpdate("INSERT INTO chat.`messagesug` (`fromUser`, `toGroup`, `messageText`) VALUES ('user2', 'HentaiAddicts', 'ñļJak nie, jak tak :D')");
 //ñļ
             //showDB();
 
@@ -100,7 +76,7 @@ public class MainSerwer {
         }
     }
 
-    public static void showDB(){
+    /*public static void showDB(){
         try {
             connect = DriverManager.getConnection(url, user, pswd);
             statement = connect.createStatement();
@@ -158,7 +134,7 @@ public class MainSerwer {
         } catch (Exception err) {
             err.printStackTrace();
         }
-    }
+    }*/
 
     public static int tryLogin(String username_, String password_) {
         try {
@@ -174,6 +150,20 @@ public class MainSerwer {
 
         } catch (Exception err) {
             return 0;
+        }
+
+    }
+
+    public static boolean isAdmin(String username_) {
+        try {
+            resultSet = statement.executeQuery("select * from chat.users where chat.users.username='" + username_ +"';");
+            //System.out.println(resultSet);
+            if (resultSet.next()) {
+                return (resultSet.getBoolean(3));
+            }
+            return false;
+        } catch (Exception err) {
+            return false;
         }
 
     }
@@ -198,13 +188,108 @@ public class MainSerwer {
         }
     }
 
+    public static void changeActive(String name, String newActive) {
+        try {
+            int IntnewActive = 0;
+            if (newActive.equals("true")) IntnewActive = 1;
+            statement.executeUpdate("UPDATE chat.users SET chat.users.active = '" + IntnewActive + "' WHERE chat.users.username = '" + name + "';");
+
+            ChatEntity temp = findEntityByName(name);
+            temp.setActive(Boolean.parseBoolean(newActive));
+            String msgU = "updateEntityļ"
+                    + temp.getName() + "ļ"
+                    + temp.getStatus() + "ļ"
+                    + temp.isActive() + "ļ"
+                    + "false";
+            MainSerwer.sendToEveryoneExcept(msgU, temp.getName());
+
+        } catch (Exception err) {
+            err.printStackTrace();
+        }
+    }
+
+    public static void changePrivilege(String name, String newPrivilege) {
+        try {
+            int IntnewPrivilege = 0;
+            if (newPrivilege.equals("true")) IntnewPrivilege = 1;
+            statement.executeUpdate("UPDATE chat.users SET chat.users.privilege = '" + IntnewPrivilege + "' WHERE chat.users.username = '" + name + "';");
+
+        } catch (Exception err) {
+            err.printStackTrace();
+        }
+    }
+
+    public static void joinGroup(String name, String groupname) {
+        try {
+            resultSet = statement.executeQuery("select * from chat.membership where chat.membership.id_group = '" + groupname + "' and chat.membership.id_user = '" + name + "';");
+
+            if (!resultSet.next()) {
+                statement.executeUpdate("INSERT INTO chat.membership (chat.membership.id_membership, chat.membership.id_user, chat.membership.id_group) VALUES (NULL, '" + name + "', '" + groupname + "');");
+
+                findEntityByName(groupname).getGroupMembers().add(findEntityByName(name));
+            }
+
+        } catch (Exception err) {
+            err.printStackTrace();
+        }
+    }
+
+    public static void leaveGroup(String name, String groupname) {
+        try {
+            resultSet = statement.executeQuery("select * from chat.membership where chat.membership.id_group = '" + groupname + "' and chat.membership.id_user = '" + name + "';");
+
+            if (resultSet.next()) {
+                statement.executeUpdate("DELETE FROM chat.membership WHERE chat.membership.id_user = '" + name + "'and chat.membership.id_group = '" + groupname + "';");
+
+                findEntityByName(groupname).getGroupMembers().remove(findEntityByName(name));
+            }
+
+        } catch (Exception err) {
+            err.printStackTrace();
+        }
+    }
+
+    public static void deleteUser(String name) {
+        try {
+
+            if (checkIfUsernameExists(name)) {
+                statement.executeUpdate("DELETE FROM chat.users WHERE chat.users.username = '" + name + "';");
+
+                ChatEntity toDelete = findEntityByName(name);
+
+                for (ChatEntity temp : ClientList) {
+
+                    if (temp.isGroup()) {
+                        temp.getGroupMembers().remove(toDelete);
+                    }
+                }
+                ClientList.remove(toDelete);
+                sendToEveryUser("deleteEntityļ" + name);
+            }
+
+        } catch (Exception err) {
+            err.printStackTrace();
+        }
+    }
+
+    public static void deleteGroup(String name) {
+        try {
+
+            if (checkIfGroupExists(name)) {
+                statement.executeUpdate("DELETE FROM chat.groups WHERE chat.groups.groupname = '" + name + "';");
+
+                ChatEntity toDelete = findEntityByName(name);
+                ClientList.remove(toDelete);
+                sendToEveryUser("deleteEntityļ" + name);
+            }
+
+        } catch (Exception err) {
+            err.printStackTrace();
+        }
+    }
+
     private static void getAllEntitiesFromDB() {
         try {
-            resultSet = statement.executeQuery("select * from chat.groups;");
-            while (resultSet.next()) {
-                String groupname = resultSet.getString(1);
-                ClientList.add(new ChatEntity(groupname, true, "Online", true, null));
-            }
 
             resultSet = statement.executeQuery("select * from chat.users;");
             while (resultSet.next()) {
@@ -213,6 +298,30 @@ public class MainSerwer {
                 ClientList.add(new ChatEntity(username, false, "Offline", active, null));
             }
 
+            resultSet = statement.executeQuery("select * from chat.groups;");
+            while (resultSet.next()) {
+                String groupname = resultSet.getString(1);
+                ClientList.add(new ChatEntity(groupname, true, "Online", true, null));
+            }
+
+
+        } catch (Exception err) {
+            err.printStackTrace();
+        }
+    }
+
+    private static void loadGroupMembers(ChatEntity group) {
+        try {
+            if (!group.isGroup()) throw new IllegalArgumentException();
+
+            resultSet = statement.executeQuery("select * from chat.membership where chat.membership.id_group = '" + group.getName() + "';");
+
+            while (resultSet.next()) {
+                String username = resultSet.getString(2);
+                ChatEntity member = findEntityByName(username);
+                group.getGroupMembers().add(member);
+                //System.out.println(group.getName() + " | " + member.getName());
+            }
 
         } catch (Exception err) {
             err.printStackTrace();
@@ -267,19 +376,8 @@ public class MainSerwer {
         }
     }
 
-    public static void sendToEveryone(String msg) {
-        for (int i = 0; i < ClientList.size(); i++) {
-
-            if (ClientList.get(i).getClientConnector() != null) {
-                ClientList.get(i).getClientConnector().write(msg);
-            }
-        }
-    }
-
     public static void sendToEveryUser(String msg) {
-        for (int i = 0; i < ClientList.size(); i++) {
-
-            ChatEntity temp = ClientList.get(i);
+        for (ChatEntity temp : ClientList) {
 
             if (!temp.isGroup() && temp.getClientConnector() != null) {
                 temp.getClientConnector().write(msg);
@@ -331,10 +429,10 @@ public class MainSerwer {
 
     public static void sendToGroup(String msg, String groupname) {
 
-        ArrayList<String> groupMembers = getGroupMembers(groupname);
+        ArrayList<ChatEntity> groupMembers = getGroupMembers(groupname);
 
-        for (String groupMember : groupMembers) {
-            ClientConnector temp = findEntityByName(groupMember).getClientConnector();
+        for (ChatEntity groupMember : groupMembers) {
+            ClientConnector temp = groupMember.getClientConnector();
             if (temp != null) {
                 temp.write(msg);
             }
@@ -342,19 +440,9 @@ public class MainSerwer {
 
     }
 
-    public static ArrayList<String> getGroupMembers(String groupname) {
-        ArrayList<String> usernameList = new ArrayList<>();
+    public static ArrayList<ChatEntity> getGroupMembers(String groupname) {
 
-        try {
-            resultSet = statement.executeQuery("select * from chat.membership where chat.membership.id_group = '"+groupname+"';");
-            while (resultSet.next()) {
-                usernameList.add(resultSet.getString(2));
-            }
-        } catch (Exception err) {
-            err.printStackTrace();
-        }
-
-        return usernameList;
+        return findEntityByName(groupname).getGroupMembers();
     }
 
     public static void addNewUser (String name, String password, String privilege) {    //privilege - 0 / 1

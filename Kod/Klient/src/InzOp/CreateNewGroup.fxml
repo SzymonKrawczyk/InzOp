@@ -65,16 +65,6 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnSpan="2" GridPane.rowIndex="1">
-                    <children>
-                        <Label text="Przypisanie użytkowników">
-                            <font>
-                                <Font size="18.0" />
-                            </font>
-                        </Label>
-                        <ListView maxHeight="-Infinity" maxWidth="-Infinity" />
-                    </children>
-                </VBox>
                 <Button fx:id="createNewGroupButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#createGroup" text="Stwórz" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="2">
                     <font>
                         <Font size="14.0" />
@@ -106,6 +96,32 @@
             <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
                <children>
                   <Label fx:id="createNewGroupNameLabel" layoutX="14.0" layoutY="24.0" text="GroupErrorlabel" wrapText="true" />
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="1">
+               <children>
+                      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="196.0">
+                          <children>
+                              <Label text="Użytkownicy">
+                                  <font>
+                                      <Font size="18.0" />
+                                  </font>
+                              </Label>
+                              <ListView fx:id="allUsersListView" maxHeight="-Infinity" maxWidth="-Infinity" />
+                          </children>
+                      </VBox>
+                  <Button layoutX="208.0" layoutY="54.0" mnemonicParsing="false" onAction="#addMember" prefHeight="25.0" prefWidth="50.0" text="&gt;&gt;" />
+                  <Button layoutX="208.0" layoutY="110.0" mnemonicParsing="false" onAction="#leaveMember" prefHeight="25.0" prefWidth="50.0" text="&lt;&lt;" />
+                   <VBox alignment="CENTER" layoutX="282.0" prefHeight="200.0" prefWidth="196.0">
+                       <children>
+                           <Label text="Członkowie">
+                               <font>
+                                   <Font size="18.0" />
+                               </font>
+                           </Label>
+                           <ListView fx:id="membersListView" maxHeight="-Infinity" maxWidth="-Infinity" />
+                       </children>
+                   </VBox>
                </children>
             </AnchorPane>
             </children>

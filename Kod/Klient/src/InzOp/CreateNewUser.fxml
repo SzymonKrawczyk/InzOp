@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- Ekran zmiany hasła -->
+<!-- Ekran tworzenia użytkownika -->
 <!---->
 <!--        Data        | Autor zmian           | Zmiany-->
 <!---->
 <!--        03.05.2020  | Michał Kopałka        |   Stworzenie interface-->
 <!--                    |                       |-->
 <!--        04.05.2020  | Szymon Krawczyk       |   Poprawki interface-->
+<!--                    |                       |-->
+<!--        10.05.2020  | Szymon Krawczyk       |   Poprawki interface-->
 <!--                    |                       |-->
 <!---->
 
@@ -62,27 +64,6 @@
                 <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnSpan="2" GridPane.rowIndex="1">
-                    <children>
-                        <Label text="Przypisanie do grup">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                        </Label>
-                        <ListView fx:id="userCreateGroupList" maxHeight="-Infinity" maxWidth="-Infinity" />
-                    </children>
-                </VBox>
-                <Button fx:id="createUserButton" alignment="CENTER" disable="true" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#createUser" text="Stwórz" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="2">
-                    <font>
-                        <Font size="14.0" />
-                    </font>
-                    <GridPane.margin>
-                        <Insets left="20.0" right="20.0" />
-                    </GridPane.margin>
-               <padding>
-                  <Insets bottom="8.0" left="16.0" right="16.0" top="8.0" />
-               </padding>
-                </Button>
             <VBox alignment="TOP_RIGHT" prefHeight="200.0" prefWidth="100.0" spacing="16.0">
                <children>
                   <HBox alignment="TOP_RIGHT" spacing="8.0">
@@ -126,6 +107,40 @@
                <children>
                   <Label fx:id="createUserNameErrorLabel" layoutY="-3.0" prefWidth="227.0" text="Nazwy użytkownika nie można później zmienić" wrapText="true" />
                   <Label fx:id="createUserPasswordErrorLabel" layoutY="47.0" text="Error Label" wrapText="true" />
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="167.0" prefWidth="576.0" GridPane.columnSpan="2" GridPane.rowIndex="1">
+               <children>
+                      <VBox alignment="CENTER" layoutY="19.0" prefHeight="181.0" prefWidth="167.0">
+                          <children>
+                              <Label text="Wszystkie grupy">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                              </Label>
+                              <ListView fx:id="allGroupList" maxHeight="-Infinity" maxWidth="-Infinity" />
+                          </children>
+                      </VBox>
+                  <Button layoutX="177.0" layoutY="68.0" mnemonicParsing="false" onAction="#addGroup" prefHeight="25.0" prefWidth="54.0" text="&gt;&gt;" />
+                  <Button layoutX="177.0" layoutY="118.0" mnemonicParsing="false" onAction="#leaveGroup" prefHeight="25.0" prefWidth="50.0" text="&lt;&lt;" />
+                   <VBox alignment="CENTER" layoutX="250.0" layoutY="19.0" prefHeight="181.0" prefWidth="167.0">
+                       <children>
+                           <Label text="Przypisanie do grup">
+                               <font>
+                                   <Font size="14.0" />
+                               </font>
+                           </Label>
+                           <ListView fx:id="userCreateGroupList" maxHeight="-Infinity" maxWidth="-Infinity" />
+                       </children>
+                   </VBox>
+                      <Button fx:id="createUserButton" alignment="CENTER" disable="true" layoutX="450.0" layoutY="178.0" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#createUser" text="Stwórz">
+                          <font>
+                              <Font size="14.0" />
+                          </font>
+                     <padding>
+                        <Insets bottom="8.0" left="16.0" right="16.0" top="8.0" />
+                     </padding>
+                      </Button>
                </children>
             </AnchorPane>
             </children>

@@ -73,9 +73,7 @@ public class ConnectAndLoginViewController {
                 } catch (IOException e1) { }
 
                 //Próba łączenia
-                //System.out.println(SerwerAddressField.getText().trim());
                 serwerConnector.connect(SerwerAddressField.getText().trim());
-                //serwerConnector.connect("localhost");
 
                 myErrorLabel.setTextFill(Main.PassFillColor);
                 myErrorLabel.setText("Połączono");
@@ -92,7 +90,7 @@ public class ConnectAndLoginViewController {
             myErrorLabel.setTextFill(Main.ErrorFillColor);
             myErrorLabel.setText("Błąd połączenia");
 
-            err.printStackTrace();
+            //err.printStackTrace();
         }
     }
 

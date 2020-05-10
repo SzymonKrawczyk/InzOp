@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- Ekran zmiany hasła -->
+<!-- Ekran zarządzania użytkownikami -->
 <!---->
 <!--        Data        | Autor zmian           | Zmiany-->
 <!---->
 <!--        03.05.2020  | Michał Kopałka        |   Stworzenie interface-->
 <!--                    |                       |-->
 <!--        04.05.2020  | Szymon Krawczyk       |   Poprawki interface-->
+<!--                    |                       |-->
+<!--        10.05.2020  | Szymon Krawczyk       |   Poprawki interface-->
 <!--                    |                       |-->
 <!---->
 
@@ -89,7 +91,7 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <Button mnemonicParsing="false" onAction="#GoToEditUserScreen" text="Edytuj" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="TOP">
+            <Button fx:id="editCurrentUser" mnemonicParsing="false" onAction="#GoToEditUserScreen" text="Edytuj" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="TOP">
                <font>
                   <Font size="14.0" />
                </font>

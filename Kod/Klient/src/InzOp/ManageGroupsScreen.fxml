@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- Ekran zmiany hasła -->
+<!-- Ekran zarządzania grupami -->
 <!---->
 <!--        Data        | Autor zmian           | Zmiany-->
 <!---->
 <!--        03.05.2020  | Michał Kopałka        |   Stworzenie interface-->
 <!--                    |                       |-->
 <!--        04.05.2020  | Szymon Krawczyk       |   Poprawki interface-->
+<!--                    |                       |-->
+<!--        10.05.2020  | Szymon Krawczyk       |   Poprawki interface-->
 <!--                    |                       |-->
 <!---->
 
@@ -77,19 +79,19 @@
                   <Insets bottom="8.0" left="16.0" right="16.0" top="8.0" />
                </padding>
                 </Button>
-                <Label text="jakąś grupę" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                <Label fx:id="currrentGroupSelected" text="jakąś grupę" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                 <Label text="Wybrano: " GridPane.halignment="RIGHT" GridPane.rowIndex="2">
                     <font>
                         <Font size="18.0" />
                     </font>
                 </Label>
-                <ListView maxHeight="-Infinity" maxWidth="-Infinity" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                <ListView fx:id="allGroupView" maxHeight="-Infinity" maxWidth="-Infinity" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                 <Label text="Lista grup: " GridPane.columnSpan="2" GridPane.halignment="CENTER">
                     <font>
                         <Font size="18.0" />
                     </font>
                 </Label>
-                <Button mnemonicParsing="false" onAction="#GoToEditGroupScreen" text="Edytuj" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="TOP">
+                <Button fx:id="editCurrentGroup" mnemonicParsing="false" onAction="#GoToEditGroupScreen" text="Edytuj" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="TOP">
                     <font>
                         <Font size="14.0" />
                     </font>

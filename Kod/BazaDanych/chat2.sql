@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Czas generowania: 10 Maj 2020, 21:21
+-- Czas generowania: 03 Maj 2020, 20:07
 -- Wersja serwera: 10.1.37-MariaDB
 -- Wersja PHP: 7.2.12
 
@@ -21,7 +21,6 @@ SET time_zone = "+00:00";
 --
 -- Baza danych: `chat`
 --
-DROP DATABASE IF EXISTS `chat`;
 CREATE DATABASE IF NOT EXISTS `chat` DEFAULT CHARACTER SET utf16 COLLATE utf16_polish_ci;
 USE `chat`;
 
@@ -35,6 +34,15 @@ CREATE TABLE `groups` (
   `groupname` varchar(20) COLLATE utf16_polish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_polish_ci;
 
+--
+-- Zrzut danych tabeli `groups`
+--
+
+INSERT INTO `groups` (`groupname`) VALUES
+('AnimeGirls'),
+('AnimeLovers'),
+('HentaiAddicts');
+
 -- --------------------------------------------------------
 
 --
@@ -46,6 +54,14 @@ CREATE TABLE `membership` (
   `id_user` varchar(20) COLLATE utf16_polish_ci NOT NULL,
   `id_group` varchar(20) COLLATE utf16_polish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_polish_ci;
+
+--
+-- Zrzut danych tabeli `membership`
+--
+
+INSERT INTO `membership` (`id_membership`, `id_user`, `id_group`) VALUES
+(1, 'user1', 'HentaiAddicts'),
+(2, 'user2', 'HentaiAddicts');
 
 -- --------------------------------------------------------
 
@@ -60,6 +76,60 @@ CREATE TABLE `messagesug` (
   `messageTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `messageText` varchar(500) CHARACTER SET utf8 COLLATE utf8_polish_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf16 COLLATE=utf16_polish_ci;
+
+--
+-- Zrzut danych tabeli `messagesug`
+--
+
+INSERT INTO `messagesug` (`id_wUG`, `fromUser`, `toGroup`, `messageTime`, `messageText`) VALUES
+(37, 'user1', 'HentaiAddicts', '2020-04-17 08:14:24', 'Witam na grupce! :3'),
+(38, 'user2', 'HentaiAddicts', '2020-04-17 08:14:24', 'O! No cześć :D\nCo tam??'),
+(39, 'user1', 'HentaiAddicts', '2020-04-17 08:14:24', 'Wszystko spoczko. Oglądamy razem jakieś hentai po pracy?'),
+(40, 'user1', 'HentaiAddicts', '2020-04-17 08:14:24', 'Jak nie, jak tak :D'),
+(41, 'user2', 'HentaiAddicts', '2020-04-19 17:23:01', 'ñļJak nie, jak tak :D'),
+(42, 'user1', 'HentaiAddicts', '2020-05-03 14:33:42', 'siema'),
+(43, 'user1', 'HentaiAddicts', '2020-05-03 14:35:12', 'test!ññtest!!ññtest!!'),
+(44, 'user1', 'HentaiAddicts', '2020-05-03 14:35:18', 'działa!'),
+(45, 'user1', 'HentaiAddicts', '2020-05-03 15:05:01', 'hej'),
+(46, 'user1', 'HentaiAddicts', '2020-05-03 15:05:26', 'hej'),
+(47, 'user2', 'HentaiAddicts', '2020-05-03 15:05:28', 'hej'),
+(48, 'user1', 'HentaiAddicts', '2020-05-03 15:05:32', 'co tam'),
+(49, 'user1', 'HentaiAddicts', '2020-05-03 15:05:33', '?'),
+(50, 'user2', 'HentaiAddicts', '2020-05-03 15:05:38', 'działa'),
+(51, 'user1', 'HentaiAddicts', '2020-05-03 15:05:43', 'lol xDñdziała? armaty nawet'),
+(52, 'user2', 'HentaiAddicts', '2020-05-03 15:07:23', 'hej'),
+(53, 'user1', 'HentaiAddicts', '2020-05-03 15:07:37', 'xad'),
+(54, 'user2', 'HentaiAddicts', '2020-05-03 15:07:42', 'ok'),
+(55, 'user2', 'HentaiAddicts', '2020-05-03 15:09:30', 'hej'),
+(56, 'user2', 'HentaiAddicts', '2020-05-03 15:09:45', 'zaśmiecę całą bazę danych'),
+(57, 'user2', 'HentaiAddicts', '2020-05-03 15:09:52', 'aaa'),
+(58, 'user2', 'HentaiAddicts', '2020-05-03 15:09:55', 'bbb'),
+(59, 'user2', 'HentaiAddicts', '2020-05-03 15:41:10', 'ho'),
+(60, 'user2', 'HentaiAddicts', '2020-05-03 15:41:31', 'ho'),
+(61, 'user2', 'HentaiAddicts', '2020-05-03 15:41:34', 'ho'),
+(62, 'user2', 'HentaiAddicts', '2020-05-03 15:49:12', 'aaa'),
+(63, 'user2', 'HentaiAddicts', '2020-05-03 15:49:17', 'asda'),
+(64, 'user2', 'HentaiAddicts', '2020-05-03 15:49:28', 'aaa'),
+(65, 'user2', 'HentaiAddicts', '2020-05-03 15:49:44', 'hhe'),
+(66, 'user2', 'HentaiAddicts', '2020-05-03 15:50:40', 'aaa'),
+(67, 'user1', 'HentaiAddicts', '2020-05-03 15:50:51', 'siemaaaa'),
+(68, 'user2', 'HentaiAddicts', '2020-05-03 15:50:57', 'aaa'),
+(69, 'user1', 'HentaiAddicts', '2020-05-03 15:50:57', 'co tam'),
+(70, 'user1', 'HentaiAddicts', '2020-05-03 15:50:59', 'Marcinku'),
+(71, 'user1', 'HentaiAddicts', '2020-05-03 15:51:00', '?'),
+(72, 'user1', 'HentaiAddicts', '2020-05-03 15:51:04', 'xD'),
+(73, 'user1', 'HentaiAddicts', '2020-05-03 15:51:07', 'lol'),
+(74, 'user2', 'HentaiAddicts', '2020-05-03 15:51:10', 'XDDDDDDD'),
+(75, 'user2', 'HentaiAddicts', '2020-05-03 15:51:15', 'XXDDD'),
+(76, 'user2', 'HentaiAddicts', '2020-05-03 15:55:37', 'he'),
+(77, 'user2', 'HentaiAddicts', '2020-05-03 15:57:19', 'h'),
+(78, 'user2', 'HentaiAddicts', '2020-05-03 15:57:34', 'hh'),
+(79, 'user1', 'HentaiAddicts', '2020-05-03 15:57:41', 'asdasd'),
+(80, 'user2', 'HentaiAddicts', '2020-05-03 15:57:45', 'h'),
+(81, 'user2', 'HentaiAddicts', '2020-05-03 15:58:42', 'hh'),
+(82, 'user2', 'HentaiAddicts', '2020-05-03 15:58:50', 'hh'),
+(83, 'user1', 'HentaiAddicts', '2020-05-03 16:01:15', '1232323'),
+(84, 'user2', 'HentaiAddicts', '2020-05-03 16:06:42', 'hi');
 
 -- --------------------------------------------------------
 
@@ -163,25 +233,7 @@ INSERT INTO `messagesuu` (`id_wUU`, `fromUser`, `toUser`, `messageTime`, `messag
 (82, 'user2', 'user1', '2020-05-03 16:06:49', 'hh'),
 (83, 'user2', 'user1', '2020-05-03 16:06:57', 'hhh'),
 (84, 'user1', 'user2', '2020-05-03 16:06:59', ':3'),
-(85, 'user1', 'user2', '2020-05-03 16:11:56', 'to pa'),
-(86, 'user1', 'user2', '2020-05-08 18:20:35', 'ss'),
-(87, 'user1', 'user2', '2020-05-08 18:21:17', 'Siemka!ñTylko testuję czy á zepsuje bazę xDñTooo odpalamy!'),
-(88, 'user1', 'user2', '2020-05-08 18:21:19', 'o działa'),
-(89, 'user2', 'user1', '2020-05-08 18:40:30', 'hej'),
-(90, 'user2', 'user1', '2020-05-08 18:42:19', 'hej'),
-(91, 'user2', 'user1', '2020-05-08 18:42:44', 'hej'),
-(92, 'user1', 'user2', '2020-05-08 18:42:49', 'no elo'),
-(93, 'user1', 'user2', '2020-05-08 18:44:08', 'á;DROP TABLE users'),
-(94, 'Michal', 'user1', '2020-05-08 18:56:16', 'jestes jeszcze?'),
-(95, 'user1', 'Michal', '2020-05-08 18:56:50', 'laldl'),
-(96, 'user1', 'Michal', '2020-05-08 18:56:50', 'asd'),
-(97, 'user1', 'Michal', '2020-05-08 18:56:51', 'as'),
-(98, 'user1', 'Michal', '2020-05-08 18:56:51', 'd'),
-(99, 'user1', 'Michal', '2020-05-08 18:56:51', 'asd'),
-(101, 'Sekretariat1', 'user2', '2020-05-09 19:31:13', 'siema'),
-(102, 'Sekretariat1', 'Michal', '2020-05-10 18:14:00', 'siema'),
-(103, 'Sekretariat1', 'Michal', '2020-05-10 18:14:06', 'siemañsiema'),
-(104, 'Michal', 'Sekretariat1', '2020-05-10 18:14:59', 'hej');
+(85, 'user1', 'user2', '2020-05-03 16:11:56', 'to pa');
 
 -- --------------------------------------------------------
 
@@ -201,13 +253,12 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`username`, `password`, `privilege`, `active`) VALUES
-('Michal', '94f55fe8fce60b64d994288cc27efdd70d9413b139289bd28f6418a6c9888ebd', 1, 1),
-('PanTest', '3505aaebeb458556728702a9fd18c07ba324e4f12b35fc73baf62aff18d1a39e', 0, 1),
-('PanTest2', 'd56d0befd17f4ef7b326aa41dc1cfcb8d84be6c6c1ad66ad038d4f97240084db', 1, 0),
+('panMarek', '97d2fbce95be118151767f28280c159950babe3222496d1ca6c0742a06461ece', 0, 1),
 ('Sekretariat1', '831799514337b997347fd36e44cf6b1adb00760a507bcfa2cdb9a397da1a8ccd', 1, 1),
 ('Sekretariat2', 'aa045e9c157aeedb6e063e11627252afc60441a998c929aa233718b0fb2096b2', 1, 1),
 ('user1', '6152c082751df782c7943730ed2470cb9ffdfbddf04c8edcb9b7aeec2ae137f2', 0, 1),
-('user2', '53f92365afd658eb3fc8cef9e8e32de23675293c257b47dc32279656b8df4d67', 0, 0);
+('user2', '53f92365afd658eb3fc8cef9e8e32de23675293c257b47dc32279656b8df4d67', 0, 1),
+('user3', 'e0679bd4d613a1fdd03bb4ab8b9a2703b81543e459fdc2a5436e4f1c51cff016', 0, 1);
 
 --
 -- Indeksy dla zrzutów tabel
@@ -257,19 +308,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT dla tabeli `membership`
 --
 ALTER TABLE `membership`
-  MODIFY `id_membership` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id_membership` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT dla tabeli `messagesug`
 --
 ALTER TABLE `messagesug`
-  MODIFY `id_wUG` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
+  MODIFY `id_wUG` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
 
 --
 -- AUTO_INCREMENT dla tabeli `messagesuu`
 --
 ALTER TABLE `messagesuu`
-  MODIFY `id_wUU` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=105;
+  MODIFY `id_wUU` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=86;
 
 --
 -- Ograniczenia dla zrzutów tabel

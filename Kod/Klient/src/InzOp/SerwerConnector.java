@@ -14,8 +14,10 @@
     03.05.2020  | Szymon Krawczyk       |   Debugowanie
                 |                       |   Dodawanie nowej grupy
                 |                       |   Dodawanie nowego użytkownika
-                |                       |s
-
+                |                       |
+    10.05.2020  | Szymon Krawczyk       |   Debugowanie
+                |                       |   Usuwanie/ modyfikowanie grupy/klienta
+                |                       |
  */
 
 package InzOp;
@@ -84,6 +86,7 @@ public class SerwerConnector extends Thread {
                         if (tokens[1].trim().equals("true")) {
 
                             Main.serwerConnector.write("getAllEntities");
+                            Main.serwerConnector.write("getAllGroups");
 
                             Main.Privilege = tokens[2].equals("true");
                             //System.out.println(tokens[1] + " | " + tokens[2]);
@@ -150,8 +153,18 @@ public class SerwerConnector extends Thread {
                         boolean active = Boolean.parseBoolean(tokens[4]);
                         boolean newMsg = Boolean.parseBoolean(tokens[5]);
 
-                        Main.chatEntitesList.add(new ChatEntity(name, group, status, active, newMsg));
-                        Main.syncChatList();
+                        boolean error = false;
+                        for(ChatEntity entity : Main.chatEntitesList) {
+                            if (entity.getName().equals(name)) {
+                                error = true;
+                                break;
+                            }
+                        }
+
+                        if (!error){
+                            Main.chatEntitesList.add(new ChatEntity(name, group, status, active, newMsg));
+                            Main.syncChatList();
+                        }
                     }
                         break;
                     case "updateEntity":{
@@ -167,7 +180,7 @@ public class SerwerConnector extends Thread {
 
                                 temp.setStatus(Ustatus);
                                 temp.setActive(Uactive);
-                                if (Main.currentChatEntity != temp) temp.setNewMsg(UnewMsg);
+                                if (Main.currentChatEntity != temp && !temp.isNewMsg()) temp.setNewMsg(UnewMsg);
                                 break;
                             }
                         }
@@ -209,14 +222,18 @@ public class SerwerConnector extends Thread {
 
                             String newMsg = Main.denormalizeString(tokens[2]);
 
+                            boolean isFromAdmin = Boolean.parseBoolean(tokens[4]);  // Jak tak to powiadomienie
+
                             String from;
-                            if(Main.findEntityByName(tokens[1]) != null && Main.findEntityByName(tokens[1]).isGroup()) {
-                                from = tokens[3];
+                            //noinspection ConstantConditions
+                            if (Main.findEntityByName(tokens[1]) != null && Main.findEntityByName(tokens[1]).isGroup()) {
+                                from = tokens[5];
                             } else {
                                 from = tokens[1];
                             }
+                            String date = tokens[3];
 
-                            String newText = MainWindowViewController.chatHistoryStatic.getText() + "\n" + from + " >>> " + newMsg;
+                            String newText = MainWindowViewController.chatHistoryStatic.getText() + "\n[" + date + "] {" + from + "} >>> " + newMsg;
                             MainWindowViewController.chatHistoryStatic.setText(newText);
 
                             //TODO
@@ -236,6 +253,9 @@ public class SerwerConnector extends Thread {
                                 Platform.runLater(new Runnable() {
                                     @Override
                                     public void run() {
+
+                                        CreateNewUserController.addGroups();
+
                                         CreateNewUserController.createUserNameErrorLabelStatic.setText("Użytkownik utworzony");
                                         CreateNewUserController.createUserNameErrorLabelStatic.setTextFill(Main.PassFillColor);
                                         CreateNewUserController.createUserButtonStatic.setDisable(false);
@@ -264,6 +284,7 @@ public class SerwerConnector extends Thread {
                                 Platform.runLater(new Runnable() {
                                     @Override
                                     public void run() {
+                                        CreateNewGroupController.addMembers();
                                         CreateNewGroupController.createNewGroupNameLabelStatic.setText("Grupa utworzona");
                                         CreateNewGroupController.createNewGroupNameLabelStatic.setTextFill(Main.PassFillColor);
                                         CreateNewGroupController.createNewGroupButtonStatic.setDisable(false);
@@ -286,6 +307,55 @@ public class SerwerConnector extends Thread {
                         }
                     }
                         break;
+                    case "allGroupInfo": {
+
+                        Main.allGroupsList.add(new ChatEntity(tokens[1], true, "Online", true, false));
+                        Main.syncAllGroupList();
+                    }
+                        break;
+                    case "currentUserGroupInfo": {
+
+                        for (ChatEntity groupTemp : Main.allGroupsList) {
+                            if (groupTemp.getName().equals(tokens[1]) && EditUserViewController.currentGroupsStatic != null && EditUserViewController.currentGroupsCopyStatic != null) {
+                                EditUserViewController.currentGroupsStatic.add(groupTemp);
+                                EditUserViewController.currentGroupsCopyStatic.add(groupTemp);
+                                break;
+                            }
+                        }
+                        Main.syncAllGroupList();
+                    }
+                        break;
+                    case "currentGroupInfo": {
+
+                        for (ChatEntity userTemp : Main.chatEntitesList) {
+                            if (userTemp.getName().equals(tokens[1]) && EditGroupViewController.joinMembersStatic != null && EditGroupViewController.joinMembersCopyStatic != null) {
+                                EditGroupViewController.joinMembersStatic.add(userTemp);
+                                EditGroupViewController.joinMembersCopyStatic.add(userTemp);
+                                break;
+                            }
+                        }
+                        Main.syncChatList();
+                    }
+                        break;
+                    case "currentUserInfo": {
+
+                        if (EditUserViewController.isActiveCheckboxStatic != null) {
+
+                            switch (tokens[1]){
+                                case "active": EditUserViewController.isActiveCheckboxStatic.setSelected(Boolean.parseBoolean(tokens[2])); break;
+                                case "privilege": EditUserViewController.isAdminCheckboxStatic.setSelected(Boolean.parseBoolean(tokens[2])); break;
+                            }
+                        }
+                    }
+                        break;
+                    case "deleteEntity": {
+                        Main.chatEntitesList.removeIf(entity -> entity.getName().equals(tokens[1]));
+                        Main.allGroupsList.removeIf(entity -> entity.getName().equals(tokens[1]));
+                        Main.syncChatList();
+                        Main.syncAllGroupList();
+                    }
+                        break;
+
 
                     // inne komendy
                 }
@@ -304,7 +374,7 @@ public class SerwerConnector extends Thread {
 }
 
 /*
-
+do modyfikacji kodu fxml z innych miejsc aplikacji
 Platform.runLater(new Runnable() {
                                     @Override
                                     public void run() {

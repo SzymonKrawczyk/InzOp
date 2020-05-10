@@ -14,6 +14,8 @@ package InzOp;
 
 import javafx.scene.image.Image;
 
+import java.util.ArrayList;
+
 public class ChatEntity {
 
     private String name;
@@ -21,6 +23,7 @@ public class ChatEntity {
     private String status;
     private boolean active;
     private boolean newMsg;
+
 
     public static Image imageOnline;
     public static Image imageBusy;

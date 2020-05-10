@@ -12,6 +12,7 @@ package InzOp;
 
  */
 
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,34 +20,74 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
+import javafx.util.Callback;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class CreateNewUserController {
 
-    @FXML public ListView<ChatEntity> userCreateGroupList;
+    @FXML private ListView<ChatEntity> allGroupList;
+    public static ListView<ChatEntity> allGroupsListViewStatic;
+    @FXML private ListView<ChatEntity> userCreateGroupList;
+    public static ListView<ChatEntity> userCreateGroupListStatic;
 
-    @FXML public Label createUserNameErrorLabel;
+    private ArrayList<ChatEntity> joinGroupList;
+    public static ArrayList<ChatEntity> joinGroupListStatic;
+
+
+    @FXML private Label createUserNameErrorLabel;
     public static Label createUserNameErrorLabelStatic;
-    @FXML public Label createUserPasswordErrorLabel;
+    @FXML private Label createUserPasswordErrorLabel;
 
-    @FXML public TextField createUserUsernameField;
-    @FXML public PasswordField createUserPasswordField;
+    @FXML private TextField createUserUsernameField;
+    public static TextField createUserUsernameFieldStatic;
+    @FXML private PasswordField createUserPasswordField;
 
-    @FXML public Button createUserButton;
+    @FXML private Button createUserButton;
     public static Button createUserButtonStatic;
 
-    @FXML public CheckBox createUserAdministratorCheckBox;
+    @FXML private CheckBox createUserAdministratorCheckBox;
 
     public void initialize () {
+
+        joinGroupList = new ArrayList<>();
+        joinGroupListStatic = joinGroupList;
+        userCreateGroupListStatic = userCreateGroupList;
+        allGroupsListViewStatic = allGroupList;
         createUserButtonStatic = createUserButton;
+        createUserUsernameFieldStatic = createUserUsernameField;
         createUserNameErrorLabelStatic = createUserNameErrorLabel;
 
 
         createUserPasswordErrorLabel.setText("");
         createUserNameErrorLabel.setTextFill(Main.ErrorFillColor);
         createUserPasswordErrorLabel.setTextFill(Main.ErrorFillColor);
+
+
+
+        allGroupList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        userCreateGroupList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+
+        allGroupList.setCellFactory(new Callback<ListView<ChatEntity>, ListCell<ChatEntity>>() {
+            @Override
+            public ListCell<ChatEntity> call(ListView<ChatEntity> employeeListView) {
+                return new ChatEntityCellFactorySimple();
+            }
+        });
+
+        userCreateGroupList.setCellFactory(new Callback<ListView<ChatEntity>, ListCell<ChatEntity>>() {
+            @Override
+            public ListCell<ChatEntity> call(ListView<ChatEntity> employeeListView) {
+                return new ChatEntityCellFactorySimple();
+            }
+        });
+
+        Main.syncAllGroupList();
     }
+
+
 
 
     public void goBack(ActionEvent event) throws IOException {
@@ -55,6 +96,31 @@ public class CreateNewUserController {
         Main.window.setScene(newScene);
         Main.window.show();
     }
+
+    public void addGroup(ActionEvent event) {
+        ObservableList<ChatEntity> selectedGroupsFromAll =  allGroupList.getSelectionModel().getSelectedItems();
+
+        for(ChatEntity group : selectedGroupsFromAll){
+            if (!joinGroupList.contains(group)) joinGroupList.add(group);
+        }
+        Main.syncAllGroupList();
+    }
+
+    public void leaveGroup(ActionEvent event) {
+        ObservableList<ChatEntity> selectedGroupsFromCurrent =  userCreateGroupList.getSelectionModel().getSelectedItems();
+
+        for(ChatEntity group : selectedGroupsFromCurrent){
+            joinGroupList.remove(group);
+        }
+        Main.syncAllGroupList();
+    }
+
+    public static void addGroups(){
+        for(ChatEntity groupEntity : joinGroupListStatic){
+            Main.serwerConnector.write("editUserļ" + createUserUsernameFieldStatic.getText().trim() + "ļgroupļjoinļ" + groupEntity.getName());
+        }
+    }
+
 
     public void createUser(ActionEvent event) throws IOException {
 

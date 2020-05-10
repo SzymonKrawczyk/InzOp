@@ -121,6 +121,8 @@ public class MainWindowViewController {
 
                             targetUserName.setText(Main.currentChatEntity.getName());
                             Main.setNewMsgForEntity(Main.currentChatEntity.getName(), false);
+                            sendMessage.setDisable(!Main.currentChatEntity.isActive());
+                            Main.syncChatList();
                         }
 
 
@@ -128,15 +130,11 @@ public class MainWindowViewController {
                 }
         );
 
-            //pobierz wszystkich uzytkownikow i grupy
-
-
 
         boolean sendEnter = false;
         try (BufferedReader reader = new BufferedReader(new FileReader(new File("userPreferences.txt")))) {
             String userPref1;
             if ((  userPref1 = reader.readLine()) != null) {
-                //System.out.println("sendEnter: " + userPref1);
                 if (userPref1.equals("true")) {
                     sendEnter = true;
                 }
@@ -232,9 +230,6 @@ public class MainWindowViewController {
 
                 if (Main.currentChatEntity != null) {
                     Main.serwerConnector.write("sendMessageļ" + Main.currentChatEntity.getName() + 'ļ' + newMsg);
-
-
-                    //System.out.println("Wiadomość wysłana: " + msg.length());
 
                     if (!Main.currentChatEntity.isGroup()) {
 

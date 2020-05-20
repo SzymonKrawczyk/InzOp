@@ -18,6 +18,10 @@
     10.05.2020  | Szymon Krawczyk       |   Debugowanie
                 |                       |   Usuwanie/ modyfikowanie grupy/klienta
                 |                       |
+    17.05.2020  | Szymon Krawczyk       |   Debugowanie
+                |                       |   Pobieranie historii chatu
+                |                       |   Zmiana systemu wiadomości
+                |                       |
  */
 
 package InzOp;
@@ -69,6 +73,15 @@ public class SerwerConnector extends Thread {
         isConnected = false;
         Main.Username = "";
         Main.Privilege = false;
+        /*try {
+
+            Parent root = FXMLLoader.load(getClass().getResource("ConnectAndLoginView.fxml"));
+            Main.window.setScene(new Scene (root));
+            Main.window.show();
+            Main.serwerConnector = new SerwerConnector();
+        } catch (Exception err) {
+
+        }*/
     }
 
     public void run() {
@@ -224,17 +237,12 @@ public class SerwerConnector extends Thread {
 
                             boolean isFromAdmin = Boolean.parseBoolean(tokens[4]);  // Jak tak to powiadomienie
 
-                            String from;
-                            //noinspection ConstantConditions
-                            if (Main.findEntityByName(tokens[1]) != null && Main.findEntityByName(tokens[1]).isGroup()) {
-                                from = tokens[5];
-                            } else {
-                                from = tokens[1];
-                            }
+                            String from = tokens[5];
                             String date = tokens[3];
+                            int id = Integer.parseInt(tokens[6]);
 
-                            String newText = MainWindowViewController.chatHistoryStatic.getText() + "\n[" + date + "] {" + from + "} >>> " + newMsg;
-                            MainWindowViewController.chatHistoryStatic.setText(newText);
+                            Main.messageEntitesList.add(new MessageEntity(id, from, "", newMsg, date));
+                            Main.synchMessageList();
 
                             //TODO
                             //Main.setNewMsgForEntity(tokens[1], true);
@@ -355,6 +363,17 @@ public class SerwerConnector extends Thread {
                         Main.syncAllGroupList();
                     }
                         break;
+                    case "deleteMessage": {
+
+                        Main.messageEntitesList.removeIf(msgE -> msgE.getId() == Integer.parseInt(tokens[1]));
+                        Main.synchMessageList();
+                    }
+                        break;
+                    case "deleteMessageConfirmation": {
+
+                        MainWindowViewController.clickable = true;
+                    }
+                        break;
 
 
                     // inne komendy
@@ -369,7 +388,13 @@ public class SerwerConnector extends Thread {
     }
 
     public void write(String message) {
-        Main.SerwerWriter.println(message);
+        try {
+
+            Main.SerwerWriter.println(message);
+
+        } catch (Exception err) {
+            reset();
+        }
     }
 }
 

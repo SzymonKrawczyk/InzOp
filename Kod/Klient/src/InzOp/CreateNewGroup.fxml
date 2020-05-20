@@ -23,65 +23,43 @@
     </columnConstraints>
     <rowConstraints>
         <RowConstraints minHeight="10.0" percentHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="267.4" minHeight="10.0" prefHeight="251.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="153.39999999999998" minHeight="10.0" prefHeight="68.60000000000002" vgrow="SOMETIMES" />
     </rowConstraints>
     <children>
-        <HBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="8.0" GridPane.columnSpan="2">
-            <children>
-                <ImageView fitHeight="50.0" fitWidth="71.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@media/gear.png" />
-                    </image>
-                </ImageView>
-                <Label text="Tworzenie nowej grupy">
+      <AnchorPane prefHeight="400.0" prefWidth="600.0" GridPane.columnSpan="2">
+         <children>
+                <Label layoutX="60.0" layoutY="20.0" text="Tworzenie nowej grupy" AnchorPane.leftAnchor="70.0" AnchorPane.topAnchor="25.0">
                     <font>
                         <Font size="18.0" />
                     </font>
                 </Label>
-            </children>
-            <opaqueInsets>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-            </opaqueInsets>
-         <padding>
-            <Insets left="8.0" />
-         </padding>
-        </HBox>
-        <Button mnemonicParsing="false" onAction="#goBack" text="Powrót" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
-            <padding>
-                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-            </padding>
-            <GridPane.margin>
-                <Insets bottom="10.0" left="10.0" right="20.0" top="10.0" />
-            </GridPane.margin>
-        </Button>
-        <GridPane hgap="8.0" GridPane.columnSpan="2" GridPane.rowIndex="1">
-            <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="60.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
-            </columnConstraints>
-            <rowConstraints>
-                <RowConstraints minHeight="10.0" percentHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" percentHeight="60.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            </rowConstraints>
-            <children>
-                <Button fx:id="createNewGroupButton" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#createGroup" text="Stwórz" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="2">
-                    <font>
-                        <Font size="14.0" />
-                    </font>
-                    <GridPane.margin>
-                        <Insets left="20.0" right="20.0" />
-                    </GridPane.margin>
-               <padding>
-                  <Insets bottom="8.0" left="16.0" right="16.0" top="8.0" />
-               </padding>
-                </Button>
-                  <HBox alignment="CENTER_RIGHT" spacing="8.0">
+              <Button layoutX="545.0" layoutY="17.0" mnemonicParsing="false" onAction="#goBack" prefHeight="35.0" prefWidth="65.0" text="Powrót" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="15.0">
+                  <padding>
+                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  </padding>
+              </Button>
+                <ImageView fitHeight="50.0" fitWidth="71.0" layoutY="9.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="15.0">
+                    <image>
+                        <Image url="@media/gear.png" />
+                    </image>
+                </ImageView>
+         </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </AnchorPane>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+         <children>
+                  <HBox alignment="CENTER" prefHeight="30.0" prefWidth="592.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
                       <children>
                           <Label contentDisplay="RIGHT" text="Nazwa grupy:">
                               <font>
                                   <Font size="18.0" />
                               </font>
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
                           </Label>
                           <TextField fx:id="groupnameTextField" onKeyTyped="#checkGroupName" promptText="groupname">
                               <opaqueInsets>
@@ -93,38 +71,47 @@
                           <Insets />
                       </opaqueInsets>
                   </HBox>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+            <AnchorPane nodeOrientation="LEFT_TO_RIGHT" prefHeight="200.0" prefWidth="600.0" AnchorPane.topAnchor="45.0">
                <children>
-                  <Label fx:id="createNewGroupNameLabel" layoutX="14.0" layoutY="24.0" text="GroupErrorlabel" wrapText="true" />
-               </children>
-            </AnchorPane>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="1">
-               <children>
-                      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="196.0">
+                      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="195.0" AnchorPane.leftAnchor="40.0">
                           <children>
                               <Label text="Użytkownicy">
                                   <font>
                                       <Font size="18.0" />
                                   </font>
                               </Label>
-                              <ListView fx:id="allUsersListView" maxHeight="-Infinity" maxWidth="-Infinity" />
+                              <ListView fx:id="allUsersListView" fixedCellSize="0.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="170.0" prefWidth="195.0">
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin></ListView>
                           </children>
                       </VBox>
-                  <Button layoutX="208.0" layoutY="54.0" mnemonicParsing="false" onAction="#addMember" prefHeight="25.0" prefWidth="50.0" text="&gt;&gt;" />
-                  <Button layoutX="208.0" layoutY="110.0" mnemonicParsing="false" onAction="#leaveMember" prefHeight="25.0" prefWidth="50.0" text="&lt;&lt;" />
-                   <VBox alignment="CENTER" layoutX="282.0" prefHeight="200.0" prefWidth="196.0">
+                  <Button layoutX="226.0" layoutY="55.0" mnemonicParsing="false" onAction="#addMember" prefHeight="25.0" prefWidth="50.0" text="&gt;&gt;" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="250.0" AnchorPane.topAnchor="80.0" />
+                  <Button layoutX="275.0" layoutY="106.0" mnemonicParsing="false" onAction="#leaveMember" prefHeight="25.0" prefWidth="50.0" text="&lt;&lt;" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="250.0" AnchorPane.topAnchor="114.0" />
+                   <VBox alignment="CENTER" layoutX="404.0" prefHeight="200.0" prefWidth="196.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="0.0">
                        <children>
                            <Label text="Członkowie">
                                <font>
                                    <Font size="18.0" />
                                </font>
                            </Label>
-                           <ListView fx:id="membersListView" maxHeight="-Infinity" maxWidth="-Infinity" />
+                           <ListView fx:id="membersListView" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="170.0" prefWidth="195.0" />
                        </children>
                    </VBox>
                </children>
             </AnchorPane>
-            </children>
-        </GridPane>
+             <Label fx:id="createNewGroupNameLabel" layoutX="168.0" layoutY="21.0" prefHeight="18.0" prefWidth="241.0" text="GroupErrorlabel" wrapText="true" AnchorPane.leftAnchor="175.0" AnchorPane.rightAnchor="175.0" AnchorPane.topAnchor="26.0" />
+         </children></AnchorPane>
+          <Button fx:id="createNewGroupButton" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#createGroup" prefHeight="40.0" prefWidth="79.0" text="Stwórz" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+              <font>
+                  <Font size="14.0" />
+              </font>
+              <GridPane.margin>
+                  <Insets left="20.0" right="20.0" />
+              </GridPane.margin>
+         <padding>
+            <Insets bottom="8.0" left="16.0" right="16.0" top="8.0" />
+         </padding>
+          </Button>
     </children>
 </GridPane>

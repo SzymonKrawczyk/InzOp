@@ -18,138 +18,96 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<GridPane alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" vgap="8.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="InzOp.CreateNewUserController">
+<GridPane alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="InzOp.CreateNewUserController">
     <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="30.0" prefWidth="100.0" />
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="245.0" minWidth="10.0" percentWidth="30.0" prefWidth="171.0" />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="444.0" minWidth="10.0" prefWidth="429.0" />
     </columnConstraints>
     <rowConstraints>
         <RowConstraints minHeight="10.0" percentHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="264.4" minHeight="10.0" prefHeight="65.4" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="264.4" minHeight="10.0" prefHeight="255.00000000000003" vgrow="SOMETIMES" />
     </rowConstraints>
     <children>
-        <HBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="8.0" GridPane.columnSpan="2">
-            <children>
-                <ImageView fitHeight="50.0" fitWidth="71.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@media/gear.png" />
-                    </image>
-                </ImageView>
-                <Label text="Tworzenie nowego użytkownika">
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2">
+         <children>
+              <Button layoutX="544.0" layoutY="23.0" mnemonicParsing="false" onAction="#goBack" prefHeight="35.0" prefWidth="65.0" text="Powrót" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="15.0">
+                  <padding>
+                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                  </padding>
+              </Button>
+                <Label layoutX="60.0" layoutY="26.0" text="Tworzenie nowego użytkownika" AnchorPane.leftAnchor="70.0" AnchorPane.topAnchor="25.0">
                     <font>
                         <Font size="18.0" />
                     </font>
                 </Label>
-            </children>
-            <opaqueInsets>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-            </opaqueInsets>
-        </HBox>
-        <Button mnemonicParsing="false" onAction="#goBack" text="Powrót" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
-            <padding>
-                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-            </padding>
-            <GridPane.margin>
-                <Insets bottom="10.0" left="10.0" right="20.0" top="10.0" />
-            </GridPane.margin>
-        </Button>
-        <GridPane hgap="16.0" vgap="8.0" GridPane.columnSpan="2" GridPane.rowIndex="1">
-            <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="60.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" prefWidth="100.0" />
-            </columnConstraints>
-            <rowConstraints>
-                <RowConstraints minHeight="10.0" percentHeight="40.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" percentHeight="50.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" percentHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            </rowConstraints>
-            <children>
-            <VBox alignment="TOP_RIGHT" prefHeight="200.0" prefWidth="100.0" spacing="16.0">
-               <children>
-                  <HBox alignment="TOP_RIGHT" spacing="8.0">
-                     <children>
-                        <Label contentDisplay="RIGHT" text="nazwa użytkownika:">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
+                <ImageView fitHeight="50.0" fitWidth="71.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="15.0">
+                    <image>
+                        <Image url="@media/gear.png" />
+                    </image>
+                </ImageView>
+            <CheckBox fx:id="createUserAdministratorCheckBox" layoutX="366.0" layoutY="31.0" mnemonicParsing="false" text="Administrator" AnchorPane.leftAnchor="366.0" AnchorPane.rightAnchor="124.0" AnchorPane.topAnchor="31.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane prefHeight="59.0" prefWidth="610.0" GridPane.rowIndex="1">
+         <children>
+             <Label fx:id="createUserPasswordErrorLabel" layoutX="337.0" layoutY="38.0" text="Error Label" wrapText="true" AnchorPane.leftAnchor="330.0" AnchorPane.rightAnchor="10.0" />
+            <Label contentDisplay="RIGHT" layoutX="14.0" prefHeight="27.0" prefWidth="325.0" text="nazwa użytkownika:" textAlignment="CENTER" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="255.0" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="createUserNameErrorLabel" alignment="TOP_LEFT" layoutX="326.0" layoutY="4.0" prefHeight="18.0" prefWidth="265.0" text="Nazwy użytkownika nie można później zmienić" wrapText="true" AnchorPane.leftAnchor="330.0" AnchorPane.topAnchor="4.0" />
+            <TextField fx:id="createUserUsernameField" layoutX="177.0" layoutY="1.0" onKeyTyped="#checkData" promptText="username" AnchorPane.leftAnchor="177.0" AnchorPane.rightAnchor="272.0" AnchorPane.topAnchor="4.0">
+               <opaqueInsets>
+                  <Insets left="200.0" />
+               </opaqueInsets>
+            </TextField>
+                  <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="14.0" layoutY="33.0" prefHeight="27.0" prefWidth="159.0" text="hasło:" textAlignment="JUSTIFY" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="433.0">
+                      <font>
+                          <Font size="18.0" />
+                      </font>
+                  </Label>
+                  <PasswordField fx:id="createUserPasswordField" layoutX="177.0" layoutY="34.0" onKeyTyped="#checkData" promptText="password" AnchorPane.leftAnchor="177.0" AnchorPane.rightAnchor="272.0">
+                      <opaqueInsets>
+                          <Insets left="200.0" />
+                      </opaqueInsets>
+                  </PasswordField>
+         </children>
+      </AnchorPane>
+      <AnchorPane prefHeight="167.0" prefWidth="576.0" GridPane.columnSpan="2" GridPane.rowIndex="2">
+         <children>
+                <VBox alignment="CENTER" layoutX="53.0" layoutY="19.0" prefHeight="200.0" prefWidth="195.0" AnchorPane.leftAnchor="40.0" AnchorPane.topAnchor="10.0">
+                    <children>
+                        <Label text="Wszystkie grupy">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
                         </Label>
-                        <TextField fx:id="createUserUsernameField" onKeyTyped="#checkData" promptText="username">
-                           <opaqueInsets>
-                              <Insets left="200.0" />
-                           </opaqueInsets>
-                        </TextField>
-                     </children>
-                     <opaqueInsets>
-                        <Insets />
-                     </opaqueInsets>
-                  </HBox>
-                      <HBox alignment="TOP_RIGHT" spacing="8.0">
-                          <children>
-                              <Label contentDisplay="RIGHT" text="hasło:">
-                                  <font>
-                                      <Font size="18.0" />
-                                  </font>
-                              </Label>
-                              <PasswordField fx:id="createUserPasswordField" onKeyTyped="#checkData" promptText="password">
-                                  <opaqueInsets>
-                                      <Insets left="200.0" />
-                                  </opaqueInsets>
-                              </PasswordField>
-                          </children>
-                          <opaqueInsets>
-                              <Insets />
-                          </opaqueInsets>
-                      </HBox>
-                  <CheckBox fx:id="createUserAdministratorCheckBox" mnemonicParsing="false" text="Administrator" />
-               </children>
-            </VBox>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
-               <children>
-                  <Label fx:id="createUserNameErrorLabel" layoutY="-3.0" prefWidth="227.0" text="Nazwy użytkownika nie można później zmienić" wrapText="true" />
-                  <Label fx:id="createUserPasswordErrorLabel" layoutY="47.0" text="Error Label" wrapText="true" />
-               </children>
-            </AnchorPane>
-            <AnchorPane prefHeight="167.0" prefWidth="576.0" GridPane.columnSpan="2" GridPane.rowIndex="1">
-               <children>
-                      <VBox alignment="CENTER" layoutY="19.0" prefHeight="181.0" prefWidth="167.0">
-                          <children>
-                              <Label text="Wszystkie grupy">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                              </Label>
-                              <ListView fx:id="allGroupList" maxHeight="-Infinity" maxWidth="-Infinity" />
-                          </children>
-                      </VBox>
-                  <Button layoutX="177.0" layoutY="68.0" mnemonicParsing="false" onAction="#addGroup" prefHeight="25.0" prefWidth="54.0" text="&gt;&gt;" />
-                  <Button layoutX="177.0" layoutY="118.0" mnemonicParsing="false" onAction="#leaveGroup" prefHeight="25.0" prefWidth="50.0" text="&lt;&lt;" />
-                   <VBox alignment="CENTER" layoutX="250.0" layoutY="19.0" prefHeight="181.0" prefWidth="167.0">
-                       <children>
-                           <Label text="Przypisanie do grup">
-                               <font>
-                                   <Font size="14.0" />
-                               </font>
-                           </Label>
-                           <ListView fx:id="userCreateGroupList" maxHeight="-Infinity" maxWidth="-Infinity" />
-                       </children>
-                   </VBox>
-                      <Button fx:id="createUserButton" alignment="CENTER" disable="true" layoutX="450.0" layoutY="178.0" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#createUser" text="Stwórz">
-                          <font>
-                              <Font size="14.0" />
-                          </font>
-                     <padding>
-                        <Insets bottom="8.0" left="16.0" right="16.0" top="8.0" />
-                     </padding>
-                      </Button>
-               </children>
-            </AnchorPane>
-            </children>
-         <padding>
-            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
-         </padding>
-        </GridPane>
+                        <ListView fx:id="allGroupList" maxHeight="-Infinity" maxWidth="-Infinity" />
+                    </children>
+                </VBox>
+            <Button layoutX="247.0" layoutY="58.0" mnemonicParsing="false" onAction="#addGroup" prefHeight="25.0" prefWidth="54.0" text="&gt;&gt;" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="250.0" AnchorPane.topAnchor="80.0" />
+            <Button layoutX="177.0" layoutY="118.0" mnemonicParsing="false" onAction="#leaveGroup" prefHeight="25.0" prefWidth="50.0" text="&lt;&lt;" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="250.0" AnchorPane.topAnchor="114.0" />
+             <VBox alignment="CENTER" layoutX="250.0" layoutY="19.0" prefHeight="200.0" prefWidth="195.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="10.0">
+                 <children>
+                     <Label text="Przypisanie do grup">
+                         <font>
+                             <Font size="14.0" />
+                         </font>
+                     </Label>
+                     <ListView fx:id="userCreateGroupList" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="182.0" prefWidth="200.0" />
+                 </children>
+             </VBox>
+                <Button fx:id="createUserButton" alignment="CENTER" disable="true" layoutX="263.0" layoutY="205.0" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#createUser" text="Stwórz" textAlignment="CENTER">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+               <padding>
+                  <Insets bottom="8.0" left="16.0" right="16.0" top="8.0" />
+               </padding>
+                </Button>
+         </children>
+      </AnchorPane>
     </children>
-   <padding>
-      <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-   </padding>
 </GridPane>

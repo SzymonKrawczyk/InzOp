@@ -11,29 +11,62 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<GridPane hgap="8.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="700.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="InzOp.ConnectAndLoginViewController">
+<GridPane hgap="8.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="InzOp.ConnectAndLoginViewController">
   <columnConstraints>
     <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
   </columnConstraints>
   <rowConstraints>
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
     <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="TOP" vgrow="SOMETIMES" />
       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="74.4" minHeight="10.0" prefHeight="65.4" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="93.39999999999998" minHeight="10.0" prefHeight="93.39999999999998" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <Label text="Adres serwera:" />
-      <Label text="Login:" GridPane.rowIndex="2" />
-      <Label text="Hasło:" GridPane.rowIndex="3" />
-      <TextField fx:id="SerwerAddressField" onAction="#onConnectToSerwerButtonClick" GridPane.columnIndex="1" />
-      <Button fx:id="ConnectToSerwerButton" mnemonicParsing="false" onAction="#onConnectToSerwerButtonClick" text="Połącz" GridPane.columnIndex="2" />
-      <TextField fx:id="LoginField" disable="true" editable="false" onAction="#onLoginButtonClick" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-      <PasswordField fx:id="PasswordField" disable="true" editable="false" onAction="#onLoginButtonClick" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-      <Button fx:id="LoginButton" disable="true" mnemonicParsing="false" onAction="#onLoginButtonClick" text="Zaloguj" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-      <Label fx:id="myErrorLabel" text="ErrorLabel" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-      <Label fx:id="ErrorLoginLabel" text="ErrorLoginLabel" GridPane.columnIndex="2" GridPane.rowIndex="3" GridPane.valignment="TOP" />
+      <Label text="Adres serwera:" GridPane.rowIndex="1">
+         <font>
+            <Font size="18.0" />
+         </font></Label>
+      <Label text="Login:" GridPane.rowIndex="3">
+         <font>
+            <Font size="14.0" />
+         </font></Label>
+      <Label text="Hasło:" GridPane.rowIndex="4">
+         <font>
+            <Font size="14.0" />
+         </font></Label>
+      <TextField fx:id="SerwerAddressField" onAction="#onConnectToSerwerButtonClick" GridPane.columnIndex="1" GridPane.rowIndex="1">
+         <font>
+            <Font size="14.0" />
+         </font></TextField>
+      <Button fx:id="ConnectToSerwerButton" mnemonicParsing="false" onAction="#onConnectToSerwerButtonClick" prefWidth="65.0" text="Połącz" GridPane.columnIndex="2" GridPane.rowIndex="1">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
+      <TextField fx:id="LoginField" disable="true" editable="false" onAction="#onLoginButtonClick" GridPane.columnIndex="1" GridPane.rowIndex="3">
+         <font>
+            <Font size="14.0" />
+         </font></TextField>
+      <PasswordField fx:id="PasswordField" disable="true" editable="false" onAction="#onLoginButtonClick" GridPane.columnIndex="1" GridPane.rowIndex="4">
+         <font>
+            <Font size="14.0" />
+         </font></PasswordField>
+      <Button fx:id="LoginButton" disable="true" mnemonicParsing="false" onAction="#onLoginButtonClick" text="Zaloguj" GridPane.columnIndex="2" GridPane.rowIndex="3">
+         <font>
+            <Font size="14.0" />
+         </font></Button>
+      <Label fx:id="myErrorLabel" text="ErrorLabel" textAlignment="CENTER" textFill="#f00404" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+         <font>
+            <Font size="14.0" />
+         </font></Label>
+      <Label fx:id="ErrorLoginLabel" text="ErrorLoginLabel" textFill="#f50000" GridPane.columnIndex="2" GridPane.rowIndex="4" GridPane.valignment="CENTER">
+         <font>
+            <Font size="14.0" />
+         </font></Label>
    </children>
 </GridPane>

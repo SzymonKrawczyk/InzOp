@@ -18,6 +18,8 @@
     10.05.2020  | Szymon Krawczyk       |   Debugowanie
                 |                       |   Lista grup i jej synchronizacja
                 |                       |
+    17.05.2020  | Michał Kopałka        |   Lista wiadomości i jej synchronizacja
+                |                       |
  */
 
 package InzOp;
@@ -66,6 +68,7 @@ public class Main extends Application {
 
     public static ArrayList<ChatEntity> chatEntitesList;
     public static ArrayList<ChatEntity> allGroupsList;
+    public static ArrayList<MessageEntity> messageEntitesList;
 
 
 
@@ -74,13 +77,16 @@ public class Main extends Application {
 
         chatEntitesList = new ArrayList<ChatEntity>();
         allGroupsList = new ArrayList<ChatEntity>();
+        messageEntitesList = new ArrayList<MessageEntity>();
 
         ChatEntity.imageOnline = new Image(getClass().getResource("media/green.png").toExternalForm());
         ChatEntity.imageBusy = new Image(getClass().getResource("media/red.png").toExternalForm());
         ChatEntity.imageOffline = new Image(getClass().getResource("media/grey.png").toExternalForm());
+        ChatEntity.imageGroup = new Image(getClass().getResource("media/group.png").toExternalForm());
+        MessageEntity.imageDelete = new Image(getClass().getResource("media/bin.png").toExternalForm());
 
         window = primaryStage;
-        window.setMinWidth(700);
+        window.setMinWidth(600);
         window.setMinHeight(400);
         Parent root = FXMLLoader.load(getClass().getResource("ConnectAndLoginView.fxml"));
         ConnectAndLoginView = new Scene (root);
@@ -105,6 +111,31 @@ public class Main extends Application {
         Privilege = false;
         currentChatEntity = null;
     }
+
+
+    public static void synchMessageList() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+
+                Main.messageEntitesList.sort(mainMessageComparator);
+
+                final ObservableList<MessageEntity> messageEntities = FXCollections.observableArrayList();
+                messageEntities.addAll(Main.messageEntitesList);
+
+                //Listy do synchronizacji
+                if (MainWindowViewController.MessageEntitiesListViewStatic != null) MainWindowViewController.MessageEntitiesListViewStatic.setItems(messageEntities);
+            }
+        });
+    }
+
+    static Comparator<MessageEntity> mainMessageComparator = (MessageEntity m1, MessageEntity m2) -> {
+
+        Long m1t = m1.gettimestampConvertedToMilliSeconds();
+        Long m2t = m2.gettimestampConvertedToMilliSeconds();
+
+        return m1t.compareTo(m2t);
+    };
 
     static Comparator<ChatEntity> mainComparator = (ChatEntity ch1, ChatEntity ch2) -> {
 

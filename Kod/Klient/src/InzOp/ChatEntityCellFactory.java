@@ -58,7 +58,10 @@ public class ChatEntityCellFactory extends ListCell<ChatEntity> {
         }
         else {
 
-            if (item.getStatus().trim().equals("Online")) {
+            if (item.isGroup()) {
+
+                thumbImageView.setImage(ChatEntity.imageGroup);
+            } else if (item.getStatus().trim().equals("Online")) {
 
                 thumbImageView.setImage(ChatEntity.imageOnline);
             } else if (item.getStatus().trim().equals("Zajęty")) {

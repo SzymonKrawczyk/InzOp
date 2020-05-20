@@ -49,8 +49,8 @@ public class EditUserViewController {
     private CheckBox isActiveCheckbox;
     public static CheckBox isActiveCheckboxStatic;
 
-    @FXML
-    private Label ErrorLabelEditUser;
+ //   @FXML
+ //   private Label ErrorLabelEditUser;
 
     @FXML
     private Label mainLabelEditUser;
@@ -86,7 +86,7 @@ public class EditUserViewController {
         allGroupsListViewStatic = allGroupsListView;
         isInGroupsListViewStatic = isInGroupsListView;
 
-        ErrorLabelEditUser.setText("");
+    //    ErrorLabelEditUser.setText("");
         errorLabelEdituserPassword.setText("");
 
         currentGroupsStatic = new ArrayList<>();

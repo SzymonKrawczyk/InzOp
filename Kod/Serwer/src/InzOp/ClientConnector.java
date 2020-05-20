@@ -21,6 +21,10 @@
     10.05.2020  | Szymon Krawczyk       |   Debugowanie
                 |                       |   Usuwanie/ modyfikowanie grupy/klienta
                 |                       |
+    17.05.2020  | Szymon Krawczyk       |   Debugowanie
+                |                       |   Pobieranie historii chatu
+                |                       |   Zmiana systemu wiadomości
+                |                       |
 
  */
 
@@ -221,26 +225,28 @@ public class ClientConnector extends Thread {
                         break;
                     case "sendMessage":{
 
-                        ChatEntity temp = MainSerwer.findEntityByName(tokens[1]);
+                        ChatEntity temp = MainSerwer.findEntityByName(tokens[2]);
 
                         if (temp != null) {
                             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                             LocalDateTime now = LocalDateTime.now();
-                            //System.out.println(dtf.format(now));
                             String date = dtf.format(now);
-                            if (temp.isGroup()) {
 
-                                MainSerwer.addNewUGMessageToDB(chatEntity.getName(), temp.getName(), tokens[2]);
+                            if (Boolean.parseBoolean(tokens[1])) {
+
+                                int id = ++MainSerwer.currentMsgUGId;
+                                MainSerwer.addNewUGMessageToDB(id, chatEntity.getName(), temp.getName(), tokens[3]);
 
                                 MainSerwer.sendToGroup("updateEntityļ"
                                         + temp.getName() + "ļ"
                                         + temp.getStatus() + "ļ"
                                         + temp.isActive() + "ļ"
                                         + "true", temp.getName());
-
-                                MainSerwer.sendToGroup("newMessageļ" + temp.getName() + 'ļ' + tokens[2]  + 'ļ' + date + 'ļ' + privilege + 'ļ' + chatEntity.getName(), temp.getName());
+                                MainSerwer.sendToGroup("newMessageļ" + temp.getName() + 'ļ' + tokens[3]  + 'ļ' + date + 'ļ' + privilege + 'ļ' + chatEntity.getName() + 'ļ' + id, temp.getName());
                             } else {
-                                MainSerwer.addNewUUMessageToDB(chatEntity.getName(), temp.getName(), tokens[2]);
+
+                                int id = ++MainSerwer.currentMsgUUId;
+                                MainSerwer.addNewUUMessageToDB(id, chatEntity.getName(), temp.getName(), tokens[3]);
 
                                 //wyslij do odpowiedniego odbiorcy
                                 MainSerwer.sendOnlyTo("updateEntityļ"
@@ -248,7 +254,8 @@ public class ClientConnector extends Thread {
                                         + chatEntity.getStatus() + "ļ"
                                         + chatEntity.isActive() + "ļ"
                                         + "true", temp.getName());
-                                MainSerwer.sendOnlyTo("newMessageļ" + chatEntity.getName() + 'ļ' + tokens[2]  + 'ļ' + date + 'ļ' + privilege, temp.getName());
+                                MainSerwer.sendOnlyTo("newMessageļ" + chatEntity.getName() + 'ļ' + tokens[3]  + 'ļ' + date + 'ļ' + privilege + 'ļ'  + chatEntity.getName() + 'ļ' + id, temp.getName());
+                                write("newMessageļ" + temp.getName() + 'ļ' + tokens[3]  + 'ļ' + date + 'ļ' + "false" + 'ļ'  + chatEntity.getName() + 'ļ' + id);
                             }
                         }
 
@@ -364,6 +371,79 @@ public class ClientConnector extends Thread {
                         break;
                     case "deleteGroup": {
                         MainSerwer.deleteGroup(tokens[1]);
+                    }
+                        break;
+                    case "getChat": {
+
+                        ArrayList<MessageEntity> tempM;
+
+                        if (Boolean.parseBoolean(tokens[1])) {
+
+                            tempM = MainSerwer.getUGChatHistory(tokens[2]);
+
+                        } else {
+
+                            tempM = MainSerwer.getUUChatHistory(chatEntity.getName(), tokens[2]);
+                        }
+
+                        if (tempM != null) {
+
+                            for (MessageEntity currentMsg : tempM) {
+
+                                write("newMessageļ" + tokens[2] + 'ļ' + currentMsg.getMessageText() + 'ļ' + currentMsg.getTimestamp() + 'ļ' + "false" + 'ļ'  + currentMsg.getFrom() + 'ļ' + currentMsg.getId());
+                            }
+                        }
+                    }
+                        break;
+                    case "deleteMessage": {
+
+                        try {
+
+                            if (privilege) {
+
+                                if (Boolean.parseBoolean(tokens[1])) {
+
+                                    MainSerwer.deleteMsgG(Integer.parseInt(tokens[3]));
+                                    MainSerwer.sendToGroup("deleteMessageļ" + tokens[3], tokens[2]);
+
+                                } else {
+
+                                    MainSerwer.deleteMsgU(Integer.parseInt(tokens[3]));
+                                    MainSerwer.sendOnlyTo("deleteMessageļ" + tokens[3], tokens[2]);
+                                    write("deleteMessageļ" + tokens[3]);
+                                }
+                            } else {
+
+                                MessageEntity msgTemp = null;
+                                int minTime = 72;
+
+                                if (Boolean.parseBoolean(tokens[1])) {
+
+                                    msgTemp = MainSerwer.getMessageByIDG(Integer.parseInt(tokens[3]));
+
+                                    if (msgTemp.getFrom().equals(chatEntity.getName()) && MainSerwer.getTimePassedFromMessage(msgTemp) >= minTime) {
+
+                                        MainSerwer.deleteMsgG(Integer.parseInt(tokens[3]));
+                                        MainSerwer.sendToGroup("deleteMessageļ" + tokens[3], tokens[2]);
+                                    }
+
+                                } else {
+
+                                    msgTemp = MainSerwer.getMessageByIDU(Integer.parseInt(tokens[3]));
+
+                                    if (msgTemp.getFrom().equals(chatEntity.getName()) && MainSerwer.getTimePassedFromMessage(msgTemp) >= minTime) {
+
+                                        MainSerwer.deleteMsgU(Integer.parseInt(tokens[3]));
+                                        MainSerwer.sendOnlyTo("deleteMessageļ" + tokens[3], tokens[2]);
+                                        write("deleteMessageļ" + tokens[3]);
+                                    }
+                                }
+                            }
+                            write("deleteMessageConfirmation");
+
+                        } catch (Exception err) {
+                            err.printStackTrace();
+                        }
                     }
                         break;
 

@@ -28,6 +28,10 @@
                 |                       |
     10.05.2020  | Szymon Krawczyk       |   Debugowanie
                 |                       |
+    17.05.2020  | Szymon Krawczyk       |   Debugowanie
+                |                       |   Pobieranie historii chatu
+                |                       |   Usuwanie wiadomości
+                |                       |
 
 
  */
@@ -38,7 +42,12 @@ package InzOp;
         import java.security.MessageDigest;
         import java.security.NoSuchAlgorithmException;
         import java.sql.*;
+        import java.text.ParseException;
+        import java.text.SimpleDateFormat;
+        import java.time.LocalDateTime;
+        import java.time.format.DateTimeFormatter;
         import java.util.ArrayList;
+        import java.util.Date;
 
 public class MainSerwer {
 
@@ -49,6 +58,9 @@ public class MainSerwer {
     private static String user = "root", pswd = "";
 
     public static ArrayList<ChatEntity> ClientList;
+
+    public static int currentMsgUUId = 0;
+    public static int currentMsgUGId = 0;
 
 
     public static void main(String[] args) {
@@ -67,6 +79,7 @@ public class MainSerwer {
             for (ChatEntity temp : ClientList) {
                 if (temp.isGroup()) loadGroupMembers(temp);
             }
+            getCurrentMsgIds();
 
 //ñļ
             //showDB();
@@ -328,9 +341,9 @@ public class MainSerwer {
         }
     }
 
-    public static void addNewUUMessageToDB(String from, String to, String msg) {
+    public static void addNewUUMessageToDB(int id, String from, String to, String msg) {
         try {
-            String update = "INSERT INTO chat.messagesuu (chat.messagesuu.id_wUU, chat.messagesuu.fromUser, chat.messagesuu.toUser, chat.messagesuu.messageTime, chat.messagesuu.messageText) VALUES (NULL, '" + from + "', '" + to + "', CURRENT_TIMESTAMP, '"+msg+"');";
+            String update = "INSERT INTO chat.messagesuu (chat.messagesuu.id_wUU, chat.messagesuu.fromUser, chat.messagesuu.toUser, chat.messagesuu.messageTime, chat.messagesuu.messageText) VALUES ("+id+", '" + from + "', '" + to + "', CURRENT_TIMESTAMP, '"+msg+"');";
             statement.executeUpdate(update);
 
         } catch (Exception err) {
@@ -338,9 +351,9 @@ public class MainSerwer {
         }
     }
 
-    public static void addNewUGMessageToDB(String from, String to, String msg) {
+    public static void addNewUGMessageToDB(int id, String from, String to, String msg) {
         try {
-            String update = "INSERT INTO chat.messagesug (chat.messagesug.id_wUG, chat.messagesug.fromUser, chat.messagesug.toGroup, chat.messagesug.messageTime, chat.messagesug.messageText) VALUES (NULL, '" + from + "', '" + to + "', CURRENT_TIMESTAMP, '"+msg+"');";
+            String update = "INSERT INTO chat.messagesug (chat.messagesug.id_wUG, chat.messagesug.fromUser, chat.messagesug.toGroup, chat.messagesug.messageTime, chat.messagesug.messageText) VALUES ("+id+", '" + from + "', '" + to + "', CURRENT_TIMESTAMP, '"+msg+"');";
             statement.executeUpdate(update);
 
         } catch (Exception err) {
@@ -400,8 +413,6 @@ public class MainSerwer {
     }
 
     public static void sendOnlyTo(String msg, String toUsername) {
-
-        //TODO jeśli grupa do do wszystkich!
 
         for (int i = 0; i < ClientList.size(); i++) {
             ChatEntity temp = ClientList.get(i);
@@ -482,6 +493,185 @@ public class MainSerwer {
         try {
             String query = "INSERT INTO chat.groups (chat.groups.groupname) VALUES ('" + groupname + "');";
             statement.executeUpdate(query);
+
+        } catch (Exception err) {
+            err.printStackTrace();
+        }
+    }
+
+    public static ArrayList<MessageEntity> getUUChatHistory(String user1, String user2) {
+        //
+
+        try {
+
+            ArrayList<MessageEntity> temp = new ArrayList<>();
+
+            resultSet = statement.executeQuery("SELECT * FROM chat.messagesuu WHERE chat.messagesuu.fromUser = '"+user1+"' AND chat.messagesuu.toUser = '"+user2+"' OR chat.messagesuu.fromUser = '"+user2+"' AND chat.messagesuu.toUser = '"+user1+"';");
+
+            //noinspection DuplicatedCode
+            while (resultSet.next()) {
+                //System.out.println("SELECT * FROM chat.messagesuu WHERE chat.messagesuu.fromUser = '"+user1 + user2);
+                int id = resultSet.getInt(1);
+                //System.out.println(id);
+                String from = resultSet.getString(2);
+                String to = resultSet.getString(3);
+                String text = resultSet.getString(5);
+                Timestamp time = resultSet.getTimestamp(4);
+
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                LocalDateTime tempTime = time.toLocalDateTime();
+                String date = dtf.format(tempTime);
+
+                temp.add(new MessageEntity(id, from, to, text, date));
+                //System.out.println(date);
+            }
+            return temp;
+
+        } catch (Exception err) {
+            err.printStackTrace();
+            return null;
+        }
+    }
+
+    public static ArrayList<MessageEntity> getUGChatHistory(String group) {
+        try {
+
+            ArrayList<MessageEntity> temp = new ArrayList<>();
+            resultSet = statement.executeQuery("SELECT * FROM chat.messagesug WHERE chat.messagesug.toGroup = '"+group+"';");
+
+            //noinspection DuplicatedCode
+            while (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                String from = resultSet.getString(2);
+                String to = resultSet.getString(3);
+                String text = resultSet.getString(5);
+                Timestamp time = resultSet.getTimestamp(4);
+
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                LocalDateTime tempTime = time.toLocalDateTime();
+                String date = dtf.format(tempTime);
+
+                temp.add(new MessageEntity(id, from, to, text, date));
+                //System.out.println(date);
+            }
+            return temp;
+
+        } catch (Exception err) {
+            return null;
+        }
+    }
+
+    public static int getTimePassedFromMessage(MessageEntity msg_) {
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        String date = dtf.format(now);
+        long millis=0;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            Date dateInMs = sdf.parse(date);
+            millis = dateInMs.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return (int) ((millis - msg_.gettimestampConvertedToMilliSeconds())/3600000);
+    }
+
+    public static MessageEntity getMessageByIDU (int id_) {
+
+        try {
+
+            MessageEntity temp = null;
+
+            resultSet = statement.executeQuery("SELECT * FROM chat.messagesuu WHERE chat.messagesuu.id_wUU = " + id_ + ";");
+
+                //noinspection DuplicatedCode
+            if (resultSet.next()) {
+                String from = resultSet.getString(2);
+                String to = resultSet.getString(3);
+                String text = resultSet.getString(5);
+                Timestamp time = resultSet.getTimestamp(4);
+
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                LocalDateTime tempTime = time.toLocalDateTime();
+                String date = dtf.format(tempTime);
+
+                temp = new MessageEntity(id_, from, to, text, date);
+            }
+            return temp;
+
+        } catch (Exception err) {
+
+            err.printStackTrace();
+            return null;
+        }
+    }
+
+    public static MessageEntity getMessageByIDG (int id_) {
+
+        try {
+
+            MessageEntity temp = null;
+
+            resultSet = statement.executeQuery("SELECT * FROM chat.messagesug WHERE chat.messagesug.id_wUG = " + id_ + ";");
+
+                //noinspection DuplicatedCode
+            if (resultSet.next()) {
+                String from = resultSet.getString(2);
+                String to = resultSet.getString(3);
+                String text = resultSet.getString(5);
+                Timestamp time = resultSet.getTimestamp(4);
+
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                LocalDateTime tempTime = time.toLocalDateTime();
+                String date = dtf.format(tempTime);
+
+                temp = new MessageEntity(id_, from, to, text, date);
+            }
+            return temp;
+
+        } catch (Exception err) {
+
+            err.printStackTrace();
+            return null;
+        }
+    }
+
+    private static void getCurrentMsgIds() {
+
+        try {
+
+            resultSet = statement.executeQuery("SELECT * FROM chat.messagesuu ORDER BY chat.messagesuu.id_wUU DESC");
+            if (resultSet.next()) {
+                currentMsgUUId = resultSet.getInt(1);
+            }
+            resultSet = statement.executeQuery("SELECT * FROM chat.messagesug ORDER BY chat.messagesug.id_wUG DESC");
+            if (resultSet.next()) {
+                currentMsgUGId = resultSet.getInt(1);
+            }
+
+        } catch (Exception err) { }
+    }
+
+    public static void deleteMsgU (int id) {
+        try {
+
+                statement.executeUpdate("DELETE FROM chat.messagesuu WHERE chat.messagesuu.id_wUU = '" + id + "';");
+
+                //send to users "msgdeleted"
+
+        } catch (Exception err) {
+            err.printStackTrace();
+        }
+    }
+
+    public static void deleteMsgG (int id) {
+        try {
+
+            statement.executeUpdate("DELETE FROM chat.messagesug WHERE chat.messagesug.id_wUG = '" + id + "';");
+
+            //send to users "msgdeleted"
 
         } catch (Exception err) {
             err.printStackTrace();

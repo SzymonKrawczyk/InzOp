@@ -22,6 +22,8 @@ package InzOp;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -36,10 +38,12 @@ import javafx.util.Callback;
 
 
 import java.io.*;
+import java.util.ArrayList;
 
-public class MainWindowViewController {
+public class MainWindowViewController extends ListView<MessageEntity> {
 
     private int maxMessageLength = 400;
+    public static boolean clickable = true;
 
 
     @FXML
@@ -51,6 +55,11 @@ public class MainWindowViewController {
     public ListView<ChatEntity> ChatEntitiesListView;
 
     public static ListView<ChatEntity> ChatEntitiesListViewStatic;
+
+    @FXML
+    public ListView<MessageEntity> MessageEntitiesListView;
+
+    public static ListView<MessageEntity> MessageEntitiesListViewStatic;
 
     @FXML
     public Button logoutButton;
@@ -65,11 +74,6 @@ public class MainWindowViewController {
 
     @FXML
     public ImageView settingsButton;
-
-    @FXML
-    public TextArea chatHistory;
-
-    public static TextArea chatHistoryStatic;
 
     @FXML
     public TextArea currentMessage;
@@ -90,13 +94,25 @@ public class MainWindowViewController {
 
         usernameMain.setText(Main.Username);
 
-        chatHistoryStatic = chatHistory;
         ChatEntitiesListViewStatic = ChatEntitiesListView;
 
 
         usernameMainStatic = usernameMain;
 
         Main.syncChatList();
+
+        MessageEntitiesListViewStatic = MessageEntitiesListView;
+
+        Main.synchMessageList();
+
+        MessageEntitiesListView.setCellFactory(new Callback<ListView<MessageEntity>, ListCell<MessageEntity>>() {
+            @Override
+            public ListCell<MessageEntity> call(ListView<MessageEntity> messageEntityListView) {
+                return new MessageEntityCellFactory();
+            }
+        });
+
+        MessageEntitiesListView.setSelectionModel(new NoSelectionModel<MessageEntity>());
 
 
 
@@ -117,15 +133,15 @@ public class MainWindowViewController {
 
                             Main.currentChatEntity = newVal;
                             System.out.println("Current ChatEntity: " + Main.currentChatEntity.getName());
-                            chatHistory.setText("");
 
                             targetUserName.setText(Main.currentChatEntity.getName());
                             Main.setNewMsgForEntity(Main.currentChatEntity.getName(), false);
                             sendMessage.setDisable(!Main.currentChatEntity.isActive());
                             Main.syncChatList();
+                            Main.serwerConnector.write("getChatļ" + Main.currentChatEntity.isGroup() + "ļ" + Main.currentChatEntity.getName());
+                            Main.messageEntitesList = new ArrayList<>();
+                            Main.synchMessageList();
                         }
-
-
                     }
                 }
         );
@@ -205,6 +221,11 @@ public class MainWindowViewController {
         if (currentMessage.getText().length() > maxMessageLength) {
             currentMessageCharacterCount.setTextFill(Main.ErrorFillColor);
             sendMessage.setDisable(true);
+
+            if (currentMessage.getText().length() > 1000 || currentMessage.getText().length() < 0) {
+                currentMessage.setText("");
+            }
+
         } else {
             currentMessageCharacterCount.setTextFill(Main.PassFillColor);
             sendMessage.setDisable(false);
@@ -229,20 +250,15 @@ public class MainWindowViewController {
             try {
 
                 if (Main.currentChatEntity != null) {
-                    Main.serwerConnector.write("sendMessageļ" + Main.currentChatEntity.getName() + 'ļ' + newMsg);
+                    Main.serwerConnector.write("sendMessageļ" + Main.currentChatEntity.isGroup() + 'ļ' + Main.currentChatEntity.getName() + 'ļ' + newMsg);
 
-                    if (!Main.currentChatEntity.isGroup()) {
-
-                        String newChatHistory = chatHistory.getText() + "\n<<< " + msg;
-                        chatHistory.setText(newChatHistory);
-                    }
                     currentMessage.setText("");
                 } else {
                     throw new NullPointerException();
                 }
 
             } catch (NullPointerException err) {
-                err.printStackTrace();
+                //err.printStackTrace();
                 System.err.println("Wybierz odbiorcę!");
             }
 
@@ -263,6 +279,73 @@ public class MainWindowViewController {
 
     public void logOut(ActionEvent event) {
         Main.serwerConnector.write("logout");
+    }
+
+    public class NoSelectionModel<T> extends MultipleSelectionModel<T> {
+
+        @Override
+        public ObservableList<Integer> getSelectedIndices() {
+            return FXCollections.emptyObservableList();
+        }
+
+        @Override
+        public ObservableList<T> getSelectedItems() {
+            return FXCollections.emptyObservableList();
+        }
+
+        @Override
+        public void selectIndices(int index, int... indices) {
+        }
+
+        @Override
+        public void selectAll() {
+        }
+
+        @Override
+        public void selectFirst() {
+        }
+
+        @Override
+        public void selectLast() {
+        }
+
+        @Override
+        public void clearAndSelect(int index) {
+        }
+
+        @Override
+        public void select(int index) {
+        }
+
+        @Override
+        public void select(T obj) {
+        }
+
+        @Override
+        public void clearSelection(int index) {
+        }
+
+        @Override
+        public void clearSelection() {
+        }
+
+        @Override
+        public boolean isSelected(int index) {
+            return false;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return true;
+        }
+
+        @Override
+        public void selectPrevious() {
+        }
+
+        @Override
+        public void selectNext() {
+        }
     }
 
 

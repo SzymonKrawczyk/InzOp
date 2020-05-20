@@ -28,6 +28,7 @@ public class ChatEntity {
     public static Image imageOnline;
     public static Image imageBusy;
     public static Image imageOffline;
+    public static Image imageGroup;
 
     public ChatEntity(String name, boolean group, String status, boolean active, boolean newMsg) {
         this.name = name;

@@ -31,9 +31,7 @@
 package InzOp;
 
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -140,12 +138,16 @@ public class ClientConnector extends Thread {
                                 privilege = true;
                                 //dodaj to tablicy klientow
                                 addToChatEntity(tokens[1]);
+                                ++MainSerwer.logInCounter;
+                                chatEntity.setTimeWhenUserLogIn();
                                 break;
                             case 1: // user
                                 write("loginļtrueļfalse");
                                 privilege = false;
                                 //dodaj to tablicy klientow
                                 addToChatEntity(tokens[1]);
+                                ++MainSerwer.logInCounter;
+                                chatEntity.setTimeWhenUserLogIn();
                                 break;
                             case 0: // error login
                                 write("loginļfalse");
@@ -157,6 +159,7 @@ public class ClientConnector extends Thread {
                         //dodaj to tablicy klientow
                         //MainSerwer.ClientList.remove(this);
                         chatEntity.setStatus("Offline");
+                        chatEntity.setTimeWhenUserLogOut();
 
                         String msgU = "updateEntityļ"
                                 + chatEntity.getName() + "ļ"
@@ -226,8 +229,9 @@ public class ClientConnector extends Thread {
                     case "sendMessage":{
 
                         ChatEntity temp = MainSerwer.findEntityByName(tokens[2]);
-
+                        MainSerwer.messageCounter++;
                         if (temp != null) {
+
                             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                             LocalDateTime now = LocalDateTime.now();
                             String date = dtf.format(now);
@@ -446,6 +450,56 @@ public class ClientConnector extends Thread {
                         }
                     }
                         break;
+                    case "getRaports": {
+
+                        for(int i=0; i < MainSerwer.fileListStatistics.size(); i++) {
+
+                            write("raportsInfoļ" + MainSerwer.fileListStatistics.get(i));
+                        }
+                    }
+                    break;
+
+                    case "getUserRaportFile": {
+
+                        write("newFileļ" + tokens[1] + ".txt");
+                        BufferedReader BR;
+
+                        try {
+                            BR = new BufferedReader(new FileReader("raports/users/" + tokens[1] + ".txt"));
+                            String oneLine;
+
+                            while ((oneLine = BR.readLine()) != null) {
+                                write("fileContentļ" +  tokens[1] + ".txt" + "ļ" + oneLine);
+                                System.out.println(oneLine);
+                            }
+
+                            BR.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
+
+                    case "getStatisticsFile": {
+
+                        write("newFileļ" + tokens[1]);
+                        BufferedReader BR;
+
+                        try {
+                            BR = new BufferedReader(new FileReader("raports/statistics/" + tokens[1]));
+                            String oneLine;
+
+                            while ((oneLine = BR.readLine()) != null) {
+                                write("fileContentļ" +  tokens[1] + "ļ" + oneLine + 'ñ');
+                                System.out.println(oneLine);
+                            }
+
+                            BR.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
 
                     //inne polecenia
                 }

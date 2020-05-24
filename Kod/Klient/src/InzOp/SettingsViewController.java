@@ -68,4 +68,12 @@ public class SettingsViewController {
         Main.window.setScene(newScene);
         Main.window.show();
     }
+
+    public void goToRaportScreen(ActionEvent event) throws IOException{
+        //System.err.println("GroupsScreen");
+        Parent RaportScreen = FXMLLoader.load(getClass().getResource("RaportView.fxml"));
+        Scene newScene = new Scene(RaportScreen);
+        Main.window.setScene(newScene);
+        Main.window.show();
+    }
 }

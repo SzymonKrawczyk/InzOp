@@ -38,6 +38,14 @@
 
 package InzOp;
 
+        import javafx.application.Application;
+        import javafx.fxml.FXMLLoader;
+        import javafx.scene.Parent;
+        import javafx.scene.Scene;
+        import javafx.scene.image.Image;
+        import javafx.stage.Stage;
+
+        import java.io.File;
         import java.nio.charset.StandardCharsets;
         import java.security.MessageDigest;
         import java.security.NoSuchAlgorithmException;
@@ -47,9 +55,10 @@ package InzOp;
         import java.time.LocalDateTime;
         import java.time.format.DateTimeFormatter;
         import java.util.ArrayList;
+        import java.util.Arrays;
         import java.util.Date;
 
-public class MainSerwer {
+public class MainSerwer extends Application {
 
     private static Connection connect = null;
     private static Statement statement = null;
@@ -57,10 +66,22 @@ public class MainSerwer {
     private static String url = "jdbc:mysql://localhost:3306/?useLegacyDatetimeCode=false&serverTimezone=CET&useUnicode=true&characterEncoding=UTF-8";
     private static String user = "root", pswd = "";
 
+    public static Stage window;
+
     public static ArrayList<ChatEntity> ClientList;
 
     public static int currentMsgUUId = 0;
     public static int currentMsgUGId = 0;
+
+    // zmienne do raportów ogólnych
+    public static int logInCounter = 0;
+    public static int messageCounter = 0;
+
+    public static ArrayList <String> fileListStatistics;
+    public static ArrayList <String> fileListUsers;
+
+    public static RaportGenerator LIC;
+    public static UserRaportGenerator URG;
 
 
     public static void main(String[] args) {
@@ -82,72 +103,82 @@ public class MainSerwer {
             getCurrentMsgIds();
 
 //ñļ
-            //showDB();
+
+            File file = new File("raports/statistics");
+            String[] fileListBuf = file.list();
+            fileListStatistics = new ArrayList<String>();
+            if (fileListBuf != null) {
+                // raports/test.txt
+                fileListStatistics.addAll(Arrays.asList(fileListBuf));
+            }
+
+            /*for(int i=0; i < fileListStatistics.size(); i++)
+            {
+                System.out.println( fileListStatistics.get(i) );
+            }*/
+
+            file = new File("raports/users");
+            String[] fileListBuf2 = file.list();
+            fileListUsers = new ArrayList<String>();
+            if (fileListBuf2 != null) {
+                // raports/test.txt
+                fileListUsers.addAll(Arrays.asList(fileListBuf2));
+            }
+
+            /*for(int i=0; i < fileListStatistics.size(); i++)
+            {
+                System.out.println( fileListStatistics.get(i) );
+            }*/
+            // koniec czytania nazw plikow z folderu
+
+
+
+            // uruchomienie wątku do raportow ogólnych
+            LIC = new RaportGenerator();
+
+            Thread thread = new Thread(LIC);
+            thread.setDaemon(true);     //wątek demon - żyje póki wszystko inne też żyje
+            thread.start();
+
+            //inkrementacja pokazująca działanie koduodę save użyjemy w taki sposób tylko przy wyłączeniu serwera
+            // koniec kodu związanego z raportami ogólnymi
+
+
+
+
+            // raporty użytkowników
+            URG = new UserRaportGenerator();
+
+            Thread threadUserRaport = new Thread(URG);
+            threadUserRaport.setDaemon(true);
+            threadUserRaport.start();
+
+            launch(args);
 
         } catch (Exception err) {
             err.printStackTrace();
         }
     }
 
-    /*public static void showDB(){
-        try {
-            connect = DriverManager.getConnection(url, user, pswd);
-            statement = connect.createStatement();
+    @Override
+    public void start(Stage primaryStage) throws Exception {
 
-            resultSet = statement.executeQuery("select * from chat.users;");
-            System.out.println("Users: ");
-            while (resultSet.next()) {
-                String username = resultSet.getString(1);
-                String password = resultSet.getString(2);
-                boolean privilege = resultSet.getBoolean(3);
-                boolean active = resultSet.getBoolean(4);
-                System.out.println(username + " | " + password + " | " + privilege + " | " + active);
-            }
-            System.out.println();
+        window = primaryStage;
+        window.setMinWidth(600);
+        window.setMinHeight(400);
+        Parent root = FXMLLoader.load(getClass().getResource("ClientView.fxml"));
+        window.setTitle("Serwer");
 
-            resultSet = statement.executeQuery("select * from chat.groups;");
-            System.out.println("Groups: ");
-            while (resultSet.next()) {
-                String groupname = resultSet.getString(1);
-                System.out.println(groupname);
-            }
-            System.out.println();
+        window.setScene(new Scene(root));
+        window.show();
+    }
 
-            resultSet = statement.executeQuery("select * from chat.membership;");
-            System.out.println("Membership: ");
-            while (resultSet.next()) {
-                String id_user = resultSet.getString(2);
-                String id_group = resultSet.getString(3);
-                System.out.println(id_user + " < > " + id_group);
-            }
-            System.out.println();
+    @Override
+    public void stop() throws Exception {
 
-            resultSet = statement.executeQuery("select * from chat.messagesuu;");
-            System.out.println("MessegesUU: ");
-            while (resultSet.next()) {
-                String from = resultSet.getString(2);
-                String to = resultSet.getString(3);
-                String time = resultSet.getString(4);
-                String message = resultSet.getString(5);
-                System.out.println(from + " -> " + to + " | " + time + "\n\"" + message + "\"");
-            }
-            System.out.println();
-
-            resultSet = statement.executeQuery("select * from chat.messagesug;");
-            System.out.println("MessegesUG: ");
-            while (resultSet.next()) {
-                String from = resultSet.getString(2);
-                String to = resultSet.getString(3);
-                String time = resultSet.getString(4);
-                String message = resultSet.getString(5);
-                System.out.println(from + " -> " + to + " | " + time + "\n\"" + message + "\"");
-            }
-            System.out.println();
-
-        } catch (Exception err) {
-            err.printStackTrace();
-        }
-    }*/
+        LIC.save();
+        URG.save();
+    }
 
     public static int tryLogin(String username_, String password_) {
         try {

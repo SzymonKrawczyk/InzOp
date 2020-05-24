@@ -65,19 +65,23 @@ public class Main extends Application {
 
     public static ChatEntity currentManagedUser = null;
     public static ChatEntity currentManagedGroup = null;
+    public static ChatEntity currentRaportUser = null;
+    public static String currentStatisticsRaport = null;
 
     public static ArrayList<ChatEntity> chatEntitesList;
     public static ArrayList<ChatEntity> allGroupsList;
     public static ArrayList<MessageEntity> messageEntitesList;
+    public static ArrayList<String> statisticRaportsList;
 
 
 
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        chatEntitesList = new ArrayList<ChatEntity>();
-        allGroupsList = new ArrayList<ChatEntity>();
-        messageEntitesList = new ArrayList<MessageEntity>();
+        chatEntitesList = new ArrayList<>();
+        allGroupsList = new ArrayList<>();
+        messageEntitesList = new ArrayList<>();
+        statisticRaportsList = new ArrayList<>();
 
         ChatEntity.imageOnline = new Image(getClass().getResource("media/green.png").toExternalForm());
         ChatEntity.imageBusy = new Image(getClass().getResource("media/red.png").toExternalForm());
@@ -124,7 +128,10 @@ public class Main extends Application {
                 messageEntities.addAll(Main.messageEntitesList);
 
                 //Listy do synchronizacji
-                if (MainWindowViewController.MessageEntitiesListViewStatic != null) MainWindowViewController.MessageEntitiesListViewStatic.setItems(messageEntities);
+                if (MainWindowViewController.MessageEntitiesListViewStatic != null) {
+                    MainWindowViewController.MessageEntitiesListViewStatic.setItems(messageEntities);
+                    MainWindowViewController.MessageEntitiesListViewStatic.scrollTo(Main.messageEntitesList.size()-1);
+                }
             }
         });
     }
@@ -162,6 +169,8 @@ public class Main extends Application {
         return ch1.getName().toLowerCase().compareTo(ch2.getName().toLowerCase());
     };
 
+    static Comparator<String> stringSimpleComparator = Comparator.comparing(String::toLowerCase);
+
 
 
     public static void syncChatList() {
@@ -191,9 +200,12 @@ public class Main extends Application {
 
                 if (ManageUsersViewController.manageUsersListViewStatic != null) {
 
-
-
                     ManageUsersViewController.manageUsersListViewStatic.setItems(chatEntitiesToEdit);
+                }
+
+                if (RaportViewController.usersListRaportsStatic != null) {
+
+                    RaportViewController.usersListRaportsStatic.setItems(chatEntitiesToEdit);
                 }
 
 
@@ -296,6 +308,19 @@ public class Main extends Application {
                     CreateNewUserController.userCreateGroupListStatic.setItems(groupEntities);
                 }
 
+            }
+        });
+    }
+
+    public static void syncStatisticsRaports() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                Main.statisticRaportsList.sort(stringSimpleComparator);
+                final ObservableList<String> raports = FXCollections.observableArrayList();
+                raports.addAll(Main.statisticRaportsList);
+
+                if (RaportViewController.statisticsListRaportsStatic != null) RaportViewController.statisticsListRaportsStatic.setItems(raports);
             }
         });
     }

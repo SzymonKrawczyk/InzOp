@@ -31,10 +31,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 
 public class SerwerConnector extends Thread {
@@ -374,6 +371,37 @@ public class SerwerConnector extends Thread {
                         MainWindowViewController.clickable = true;
                     }
                         break;
+                    case "raportsInfo": {
+
+                        String filename = tokens[1];
+
+                        Main.statisticRaportsList.add(filename);
+                        Main.syncStatisticsRaports();
+                    }
+                    break;
+                    case "newFile": {
+
+                        String filename = tokens[1];
+
+                        FileWriter fw = new FileWriter(filename,false);
+                        fw.write( "");
+                        fw.flush();
+                        fw.close();
+
+                    }
+                    break;
+                    case "fileContent": {
+
+                        String filename = tokens[1];
+
+                        FileWriter fw = new FileWriter(filename,true);
+                        fw.write( tokens[2].substring(0, tokens[2].length()-1) + "\n");
+                        fw.flush();
+                        fw.close();
+
+                    }
+                    break;
+
 
 
                     // inne komendy

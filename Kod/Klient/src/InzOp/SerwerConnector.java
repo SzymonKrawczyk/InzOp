@@ -28,8 +28,18 @@ package InzOp;
 
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextFlow;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.Socket;
@@ -232,8 +242,6 @@ public class SerwerConnector extends Thread {
 
                             String newMsg = Main.denormalizeString(tokens[2]);
 
-                            boolean isFromAdmin = Boolean.parseBoolean(tokens[4]);  // Jak tak to powiadomienie
-
                             String from = tokens[5];
                             String date = tokens[3];
                             int id = Integer.parseInt(tokens[6]);
@@ -245,11 +253,91 @@ public class SerwerConnector extends Thread {
                             //Main.setNewMsgForEntity(tokens[1], true);
 
                         } else {
-
                             Main.setNewMsgForEntity(tokens[1], true);
+
+                            boolean isFromAdmin = Boolean.parseBoolean(tokens[4]);  // Jak tak to powiadomienie
+                            if( isFromAdmin == true ) {
+
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        boolean flag = false;
+
+                                        for (int i = 0; i < Main.chatEntitesList.size(); i++) {
+                                            ChatEntity temp = Main.chatEntitesList.get(i);
+                                            if (temp.getName().equals(tokens[1]) && temp.isGroup()) {
+                                                flag = true;
+                                                break;
+                                            }
+                                        }
+
+
+
+                                        // ############################## Opcja 1 ################################################
+
+
+                                        Stage window = new Stage();
+                                        window.initModality(Modality.APPLICATION_MODAL);
+                                        window.setTitle("Nowa wiadomość!");
+                                        window.setWidth(400);
+                                        window.setHeight(200);
+
+                                        Label label = new Label();
+                                        label.setWrapText(true);
+
+                                        TextFlow flow = new TextFlow();
+                                        flow.setTextAlignment(TextAlignment.CENTER);
+
+                                        if(flag){
+                                            Text text1=new Text("   " + tokens[5]);
+                                            text1.setStyle("-fx-font-weight: bold");
+                                            Text text2=new Text(" dodał nową wiadomość na czacie grupowym: ");
+                                            text2.setStyle("-fx-font-weight: regular");
+                                            Text text3=new Text(tokens[1]);
+                                            text3.setStyle("-fx-font-weight: bold");
+                                            Text text4=new Text(".");
+                                            flow.getChildren().addAll(text1, text2, text3, text4);
+                                        }
+                                        else {
+                                            Text text1=new Text("   Dostałeś wiadomość od ");
+                                            text1.setStyle("-fx-font-weight: regular");
+                                            Text text2=new Text(tokens[5]);
+                                            text2.setStyle("-fx-font-weight: bold");
+                                            Text text3=new Text(".");
+                                            text3.setStyle("-fx-font-weight: regular");
+                                            flow.getChildren().addAll(text1, text2, text3);
+                                        }
+
+                                        Label label2 = new Label("Jak najszybciej zapoznaj się z jej treścią. \n");
+
+                                        Button button = new Button("Rozumiem");
+                                        button.setOnAction(e->window.close());
+
+                                        VBox vBox = new VBox( 10 );
+                                        vBox.getChildren().addAll(flow, label2, button);
+
+                                        vBox.setAlignment(Pos.CENTER);
+
+                                        Scene scene = new Scene(vBox);
+                                        window.setScene(scene);
+
+                                        window.show();
+
+                                        //################################### Opcja 2 #######################################
+
+                                        Alert popUpWindow = new Alert(Alert.AlertType.INFORMATION);
+                                        popUpWindow.setTitle("Nowa wiadomość!");
+                                        if(flag) popUpWindow.setHeaderText(tokens[5] + " dodał nową wiadomość na czacie grupowym: " +  tokens[1] +".");
+                                        else popUpWindow.setHeaderText("Dostałeś wiadomość od " + tokens[5] + ".");
+
+                                        popUpWindow.setContentText("Jak najszybciej zapoznaj się z jej treścią.");
+                                        popUpWindow.show();
+                                    }
+                                });
+                            }
+
                         }
-
-
                     }
                         break;
                     case "addNewUser": {

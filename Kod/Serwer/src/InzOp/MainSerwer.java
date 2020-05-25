@@ -164,8 +164,8 @@ public class MainSerwer extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         window = primaryStage;
-        window.setMinWidth(600);
-        window.setMinHeight(400);
+        window.setMinWidth(300);
+        window.setMinHeight(300);
         Parent root = FXMLLoader.load(getClass().getResource("ClientView.fxml"));
         window.setTitle("Serwer");
 
@@ -225,7 +225,7 @@ public class MainSerwer extends Application {
 
     public static void changePassword(String name, String newPassword) {
         try {
-            statement.executeUpdate("UPDATE chat.users SET chat.users.password = '" + hashPassword(name, newPassword) + "' WHERE chat.users.username = '" + name + "';");
+            statement.executeUpdate("UPDATE chat.users SET chat.users.password = '" + hashPassword(name, newPassword.trim()) + "' WHERE chat.users.username = '" + name + "';");
 
         } catch (Exception err) {
             err.printStackTrace();
@@ -235,7 +235,7 @@ public class MainSerwer extends Application {
     public static void changeActive(String name, String newActive) {
         try {
             int IntnewActive = 0;
-            if (newActive.equals("true")) IntnewActive = 1;
+            if (newActive.trim().equals("true")) IntnewActive = 1;
             statement.executeUpdate("UPDATE chat.users SET chat.users.active = '" + IntnewActive + "' WHERE chat.users.username = '" + name + "';");
 
             ChatEntity temp = findEntityByName(name);
@@ -247,6 +247,24 @@ public class MainSerwer extends Application {
                     + "false";
             MainSerwer.sendToEveryoneExcept(msgU, temp.getName());
 
+
+            ChatEntity temp2 = findEntityByName(name);
+            if (temp2.getClientConnector() != null && newActive.equals("false")) {
+
+                temp2.setStatus("Offline");
+                temp2.setTimeWhenUserLogOut();
+
+                String msgUQ = "updateEntityļ"
+                        + temp2.getName() + "ļ"
+                        + "Offline" + "ļ"
+                        + temp2.isActive() + "ļ"
+                        + "false";
+                MainSerwer.sendToEveryoneExcept(msgUQ, temp2.getName());
+                sendOnlyTo("logout", name);
+                temp2.getClientConnector().reset();
+                temp2.getClientConnector().removeFromChatEntity();
+            }
+
         } catch (Exception err) {
             err.printStackTrace();
         }
@@ -255,9 +273,26 @@ public class MainSerwer extends Application {
     public static void changePrivilege(String name, String newPrivilege) {
         try {
             int IntnewPrivilege = 0;
-            if (newPrivilege.equals("true")) IntnewPrivilege = 1;
+            if (newPrivilege.trim().equals("true")) IntnewPrivilege = 1;
             statement.executeUpdate("UPDATE chat.users SET chat.users.privilege = '" + IntnewPrivilege + "' WHERE chat.users.username = '" + name + "';");
 
+
+            ChatEntity temp2 = findEntityByName(name);
+            if (temp2.getClientConnector() != null) {
+
+                temp2.setStatus("Offline");
+                temp2.setTimeWhenUserLogOut();
+
+                String msgU = "updateEntityļ"
+                        + temp2.getName() + "ļ"
+                        + "Offline" + "ļ"
+                        + temp2.isActive() + "ļ"
+                        + "false";
+                MainSerwer.sendToEveryoneExcept(msgU, temp2.getName());
+                sendOnlyTo("logout", name);
+                temp2.getClientConnector().reset();
+                temp2.getClientConnector().removeFromChatEntity();
+            }
         } catch (Exception err) {
             err.printStackTrace();
         }
@@ -271,6 +306,13 @@ public class MainSerwer extends Application {
                 statement.executeUpdate("INSERT INTO chat.membership (chat.membership.id_membership, chat.membership.id_user, chat.membership.id_group) VALUES (NULL, '" + name + "', '" + groupname + "');");
 
                 findEntityByName(groupname).getGroupMembers().add(findEntityByName(name));
+                String msg = "newEntityļ"
+                        + groupname + "ļ"
+                        + true + "ļ"
+                        + "Online" + "ļ"
+                        + "true" + "ļ"
+                        + "false"; //TODO
+                sendOnlyTo(msg, name);
             }
 
         } catch (Exception err) {
@@ -286,6 +328,7 @@ public class MainSerwer extends Application {
                 statement.executeUpdate("DELETE FROM chat.membership WHERE chat.membership.id_user = '" + name + "'and chat.membership.id_group = '" + groupname + "';");
 
                 findEntityByName(groupname).getGroupMembers().remove(findEntityByName(name));
+                sendOnlyTo("deleteEntityļ" + groupname, name);
             }
 
         } catch (Exception err) {
@@ -300,12 +343,16 @@ public class MainSerwer extends Application {
                 statement.executeUpdate("DELETE FROM chat.users WHERE chat.users.username = '" + name + "';");
 
                 ChatEntity toDelete = findEntityByName(name);
+                if (toDelete.getClientConnector() != null) {
+                    toDelete.getClientConnector().write("logout");
+                }
 
                 for (ChatEntity temp : ClientList) {
 
                     if (temp.isGroup()) {
                         temp.getGroupMembers().remove(toDelete);
                     }
+
                 }
                 ClientList.remove(toDelete);
                 sendToEveryUser("deleteEntityļ" + name);

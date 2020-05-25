@@ -80,14 +80,14 @@ public class ClientConnector extends Thread {
 
 
 
-    private void reset() {
+    public void reset() {
 
         username = "<NoName>";
         privilege = false;
         chatEntity = null;
     }
 
-    private void addToChatEntity (String name) {
+    public void addToChatEntity (String name) {
 
         username = name;
         for (int i = 0; i < MainSerwer.ClientList.size(); i++) {
@@ -110,7 +110,7 @@ public class ClientConnector extends Thread {
         }
     }
 
-    private void removeFromChatEntity () {
+    public void removeFromChatEntity () {
 
         chatEntity.reset();
         setChatEntity(null);
@@ -156,7 +156,6 @@ public class ClientConnector extends Thread {
                     }
                         break;
                     case "logout": {
-                        //dodaj to tablicy klientow
                         //MainSerwer.ClientList.remove(this);
                         chatEntity.setStatus("Offline");
                         chatEntity.setTimeWhenUserLogOut();
@@ -300,8 +299,8 @@ public class ClientConnector extends Thread {
                         String user = tokens[1];
                         switch (tokens[2]) {
                             case "password": MainSerwer.changePassword(user, tokens[3]); break;
-                            case "admin": MainSerwer.changeActive(user, tokens[3]); break;
-                            case "active": MainSerwer.changePrivilege(user, tokens[3]); break;
+                            case "admin": MainSerwer.changePrivilege(user, tokens[3]); break;
+                            case "active": MainSerwer.changeActive(user, tokens[3]); break;
                             case "group":
                                 if (tokens[3].equals("join")) {
                                     MainSerwer.joinGroup(user, tokens[4]);
@@ -310,22 +309,24 @@ public class ClientConnector extends Thread {
                                 }
                                 break;
                         }
-                        ChatEntity userC = MainSerwer.findEntityByName(user);
+                        /*ChatEntity userC = MainSerwer.findEntityByName(user);
                         if (userC.getClientConnector() != null) {
 
-                            userC.setStatus("Offline");
+                            //MainSerwer.ClientList.remove(this);
+                            chatEntity.setStatus("Offline");
+                            chatEntity.setTimeWhenUserLogOut();
 
                             String msgU = "updateEntityļ"
                                     + chatEntity.getName() + "ļ"
                                     + "Offline" + "ļ"
                                     + chatEntity.isActive() + "ļ"
                                     + "false";
-                            MainSerwer.sendToEveryoneExcept(msgU, userC.getName());
+                            MainSerwer.sendToEveryoneExcept(msgU, chatEntity.getName());
 
-                            userC.getClientConnector().write("logout");
+                            write("logout");
                             removeFromChatEntity();
                             reset();
-                        }
+                        }*/
 
                     }
                         break;
@@ -457,8 +458,7 @@ public class ClientConnector extends Thread {
                             write("raportsInfoļ" + MainSerwer.fileListStatistics.get(i));
                         }
                     }
-                    break;
-
+                        break;
                     case "getUserRaportFile": {
 
                         write("newFileļ" + tokens[1] + ".txt");
@@ -469,7 +469,7 @@ public class ClientConnector extends Thread {
                             String oneLine;
 
                             while ((oneLine = BR.readLine()) != null) {
-                                write("fileContentļ" +  tokens[1] + ".txt" + "ļ" + oneLine);
+                                write("fileContentļ" +  tokens[1] + ".txt" + "ļ" + oneLine + 'ñ');
                                 System.out.println(oneLine);
                             }
 
@@ -478,8 +478,7 @@ public class ClientConnector extends Thread {
                             e.printStackTrace();
                         }
                     }
-                    break;
-
+                        break;
                     case "getStatisticsFile": {
 
                         write("newFileļ" + tokens[1]);
@@ -499,7 +498,7 @@ public class ClientConnector extends Thread {
                             e.printStackTrace();
                         }
                     }
-                    break;
+                        break;
 
                     //inne polecenia
                 }

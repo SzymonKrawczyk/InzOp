@@ -49,7 +49,7 @@ public class UserRaportGenerator implements Runnable{
                     //bw.newLine();
                     fw.flush();
                     fw.close();
-                    System.out.println("Wpisano: " + (MainSerwer.ClientList.get(i).getTimeOnlineForRaport() / 60000 ) + " do pliku "+MainSerwer.ClientList.get(i).getName() + " o:" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
+                    System.out.println("Wpisano " + (MainSerwer.ClientList.get(i).getTimeOnlineForRaport() / 60000 ) + " do pliku "+MainSerwer.ClientList.get(i).getName() + " o: " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
                 }
             }
             catch(IOException ioe) {}

@@ -435,8 +435,14 @@ public class SerwerConnector extends Thread {
                         if (EditUserViewController.isActiveCheckboxStatic != null) {
 
                             switch (tokens[1]){
-                                case "active": EditUserViewController.isActiveCheckboxStatic.setSelected(Boolean.parseBoolean(tokens[2])); break;
-                                case "privilege": EditUserViewController.isAdminCheckboxStatic.setSelected(Boolean.parseBoolean(tokens[2])); break;
+                                case "active":
+                                    EditUserViewController.isActiveCheckboxStatic.setSelected(Boolean.parseBoolean(tokens[2]));
+                                    EditUserViewController.isActiveCheckboxStaticboolean = Boolean.parseBoolean(tokens[2]);
+                                    break;
+                                case "privilege":
+                                    EditUserViewController.isAdminCheckboxStatic.setSelected(Boolean.parseBoolean(tokens[2]));
+                                    EditUserViewController.isAdminCheckboxStaticboolean = Boolean.parseBoolean(tokens[2]);
+                                    break;
                             }
                         }
                     }

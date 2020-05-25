@@ -74,6 +74,9 @@ public class EditUserViewController {
     private ArrayList<ChatEntity> joinGroupList;
     private ArrayList<ChatEntity> leaveGroupList;
 
+    public static boolean isActiveCheckboxStaticboolean;
+    public static boolean isAdminCheckboxStaticboolean;
+
     public void initialize() {
 
         Main.serwerConnector.write("getInfoAboutļ" + Main.currentManagedUser.getName());
@@ -206,8 +209,13 @@ public class EditUserViewController {
             Main.serwerConnector.write("editUserļ" + Main.currentManagedUser.getName() + "ļpasswordļ" + newpassword);
         }
 
+        if (isAdminCheckboxStaticboolean != isAdminCheckbox.isSelected()) {
             Main.serwerConnector.write("editUserļ" + Main.currentManagedUser.getName() + "ļadminļ" + isAdminCheckbox.isSelected());
+        }
+
+        if (isActiveCheckboxStaticboolean != isActiveCheckbox.isSelected()) {
             Main.serwerConnector.write("editUserļ" + Main.currentManagedUser.getName() + "ļactiveļ" + isActiveCheckbox.isSelected());
+        }
 
 
         for (ChatEntity group : currentGroups) {

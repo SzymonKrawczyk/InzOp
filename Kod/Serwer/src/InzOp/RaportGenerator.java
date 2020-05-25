@@ -27,18 +27,18 @@ public class RaportGenerator implements Runnable {
         File logInCounterFile = new File(fileNameLogInCounter);
         try {
             if( logInCounterFile.createNewFile() ) {
-                System.out.println("utworzono nowy plik " + fileNameLogInCounter + ".txt");
+                //System.out.println("utworzono nowy plik " + fileNameLogInCounter + ".txt");
             } else {
-                System.out.println("plik " + fileNameLogInCounter + " już istanieje");
+                //System.out.println("plik " + fileNameLogInCounter + " już istanieje");
             }
         }catch (Exception e){}
 
         File messageCounterFile = new File(fileNameMessageCounter);
         try {
             if( messageCounterFile.createNewFile() ) {
-                System.out.println("utworzono nowy plik " + fileNameMessageCounter + ".txt");
+                //System.out.println("utworzono nowy plik " + fileNameMessageCounter + ".txt");
             } else {
-                System.out.println("plik " + fileNameMessageCounter + " już istanieje");
+                //System.out.println("plik " + fileNameMessageCounter + " już istanieje");
             }
         }catch (Exception e){}
 
@@ -102,7 +102,7 @@ public class RaportGenerator implements Runnable {
             fw.flush();
             fw.close();
 
-            System.out.println("Wpisano: " + MainSerwer.messageCounter + " do pliku" + " o:" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() );
+            System.out.println("Wpisano " + MainSerwer.messageCounter + " do pliku" + " o: " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() );
         }
         catch(IOException ioe)
         {

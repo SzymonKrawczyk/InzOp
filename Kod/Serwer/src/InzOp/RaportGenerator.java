@@ -21,8 +21,8 @@ public class RaportGenerator implements Runnable {
     String fileNameMessageCounter;
 
     RaportGenerator(){
-        this.fileNameLogInCounter =  ("raports/statistics/log_in_counter_" + java.time.LocalDate.now() + ".txt");
-        this.fileNameMessageCounter =  ("raports/statistics/message_counter_" + java.time.LocalDate.now() + ".txt");
+        this.fileNameLogInCounter =  ("raports/statistics/log_in_" + java.time.LocalDate.now() + ".txt");
+        this.fileNameMessageCounter =  ("raports/statistics/message_" + java.time.LocalDate.now() + ".txt");
 
         File logInCounterFile = new File(fileNameLogInCounter);
         try {
@@ -67,8 +67,8 @@ public class RaportGenerator implements Runnable {
     }
 
     void update_file_name_date(){
-        this.fileNameLogInCounter =  ("raports/statistics/log_in_counter_" + java.time.LocalDate.now() + ".txt");
-        this.fileNameMessageCounter =  ("raports/statistics/message_counter_" + java.time.LocalDate.now() + ".txt");
+        this.fileNameLogInCounter =  ("raports/statistics/log_in_" + java.time.LocalDate.now() + ".txt");
+        this.fileNameMessageCounter =  ("raports/statistics/message_" + java.time.LocalDate.now() + ".txt");
     }
 
 

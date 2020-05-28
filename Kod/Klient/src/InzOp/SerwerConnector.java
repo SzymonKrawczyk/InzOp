@@ -272,11 +272,6 @@ public class SerwerConnector extends Thread {
                                             }
                                         }
 
-
-
-                                        // ############################## Opcja 1 ################################################
-
-
                                         Stage window = new Stage();
                                         window.initModality(Modality.APPLICATION_MODAL);
                                         window.setTitle("Nowa wiadomość!");
@@ -311,7 +306,7 @@ public class SerwerConnector extends Thread {
 
                                         Label label2 = new Label("Jak najszybciej zapoznaj się z jej treścią. \n");
 
-                                        Button button = new Button("Rozumiem");
+                                        Button button = new Button("rozumiem");
                                         button.setOnAction(e->window.close());
 
                                         VBox vBox = new VBox( 10 );
@@ -323,16 +318,6 @@ public class SerwerConnector extends Thread {
                                         window.setScene(scene);
 
                                         window.show();
-
-                                        //################################### Opcja 2 #######################################
-
-                                        Alert popUpWindow = new Alert(Alert.AlertType.INFORMATION);
-                                        popUpWindow.setTitle("Nowa wiadomość!");
-                                        if(flag) popUpWindow.setHeaderText(tokens[5] + " dodał nową wiadomość na czacie grupowym: " +  tokens[1] +".");
-                                        else popUpWindow.setHeaderText("Dostałeś wiadomość od " + tokens[5] + ".");
-
-                                        popUpWindow.setContentText("Jak najszybciej zapoznaj się z jej treścią.");
-                                        popUpWindow.show();
                                     }
                                 });
                             }
